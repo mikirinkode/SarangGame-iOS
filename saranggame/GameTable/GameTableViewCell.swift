@@ -13,6 +13,7 @@ class GameTableViewCell: UITableViewCell {
     @IBOutlet weak var gameRating: UILabel!
     @IBOutlet weak var gameName: UILabel!
     @IBOutlet weak var gameReleaseDate: UILabel!
+    @IBOutlet weak var indicatorLoading: UIActivityIndicatorView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
