@@ -10,51 +10,12 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var gameTableView: UITableView!
-    private let pendingOperations = PendingOperations()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         gameTableView.dataSource = self
         gameTableView.register(UINib(nibName: "GameTableViewCell", bundle: nil), forCellReuseIdentifier: "gameTableViewCell")
-    }
-
-    
-    fileprivate func startOperations(game: GameModel, indexPath: IndexPath){
-        if game.state == .new {
-            startDownload(game: game, indexPath: indexPath)
-        }
-    }
-    
-    fileprivate func startDownload(game: GameModel, indexPath: IndexPath){
-        guard pendingOperations.downloadInProgress[indexPath] == nil else {return}
-        let downloader = ImageDownloader(game: game)
-        
-        downloader.completionBlock = {
-            if downloader.isCancelled { return  }
-            DispatchQueue.main.async {
-                self.pendingOperations.downloadInProgress.removeValue(forKey: indexPath)
-                self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
-            }
-        }
-        
-        pendingOperations.downloadInProgress[indexPath] = downloader
-        pendingOperations.downloadQueue.addOperation(downloader)
-    }
-    
-    
-    fileprivate func toggleSuspendOperations(isSuspended: Bool){
-        pendingOperations.downloadQueue.isSuspended = isSuspended
-    }
-}
-
-extension ViewController: UIScrollViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView){
-        toggleSuspendOperations(isSuspended: true)
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView){
-        toggleSuspendOperations(isSuspended: false)
     }
 }
 
@@ -75,7 +36,7 @@ extension ViewController: UITableViewDataSource {
             if game.state == .new {
                 cell.indicatorLoading.isHidden = false
                 cell.indicatorLoading.startAnimating()
-                startOperations(game: game, indexPath: indexPath)
+                startDownload(game: game, indexPath: indexPath)
             } else {
                 cell.indicatorLoading.startAnimating()
                 cell.indicatorLoading.isHidden = true
@@ -85,6 +46,23 @@ extension ViewController: UITableViewDataSource {
             
         } else {
             return UITableViewCell()
+        }
+    }
+    
+    fileprivate func startDownload(game: GameModel, indexPath: IndexPath){
+        let imageDownloader = ImageDownloader()
+        if (game.state == .new){
+            Task {
+                do {
+                    let image = try await imageDownloader.downloadImage(url: game.poster)
+                    game.state = .downloaded
+                    game.image = image
+                    self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
+                } catch {
+                    game.state = .failed
+                    game.image = nil
+                }
+            }
         }
     }
 }

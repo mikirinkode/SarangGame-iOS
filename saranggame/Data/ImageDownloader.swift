@@ -8,41 +8,8 @@
 import UIKit
 
 class ImageDownloader: Operation {
-    private let game: GameModel
-    
-    init(game: GameModel){
-        self.game = game
+    func downloadImage(url: URL) async throws -> UIImage {
+        async let imageData: Data = try Data(contentsOf: url)
+        return UIImage(data: try await imageData)!
     }
-    
-    override func main(){
-        if isCancelled {
-            return
-        }
-        
-        guard let imageData = try? Data(contentsOf: self.game.poster) else {return}
-        
-        if isCancelled {
-            return
-        }
-        
-        if !imageData.isEmpty {
-            self.game.image = UIImage(data: imageData)
-            self.game.state = .downloaded
-        } else {
-            self.game.image = nil
-            self.game.state = .failed
-        }
-    }
-    
-}
-
-class PendingOperations {
-    lazy var downloadInProgress: [IndexPath: Operation] = [:]
-    
-    lazy var downloadQueue: OperationQueue = {
-        var queue = OperationQueue()
-        queue.name = "com.mikirinkode.imagedownload"
-        queue.maxConcurrentOperationCount = 2
-        return queue
-    }()
 }
