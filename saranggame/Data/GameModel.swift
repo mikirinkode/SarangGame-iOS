@@ -12,73 +12,63 @@ enum DownloadState {
 }
 
 class GameModel {
-    let title: String
-    let poster: URL
-    let releaseDate: String
+    let id: Int
+    let name: String
+    let released: Date
+    let backgroundImage: URL
     let rating: Double
     
     var image: UIImage?
     var state: DownloadState = .new
     
-    init(title: String, poster: URL, releaseDate: String, rating: Double) {
-        self.title = title
-        self.poster = poster
-        self.releaseDate = releaseDate
+    init(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double) {
+        self.id  = id
+        self.name = name
+        self.backgroundImage = backgroundImage
+        self.released = released
         self.rating = rating
     }
     
 }
 
-let dummyGameList = [
-    GameModel(
-       title: "Thor: Love and Thunder",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/pIkRyD18kl4FhoCNQuWxWu5cBLM.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Minions: The Rise of Gru",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/wKiOkZTN9lUUUNZLmtnwubZYONg.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Jurassic World Dominion",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/kAVRgw7GgK1CfYEJq8ME6EvRIgU.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Top Gun: Maverick",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "The Gray Man",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/8cXbitsS6dWQ5gfMTZdorpAAzEH.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "The Black Phone",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/p9ZUzCyy9wRTDuuQexkQ78R2BgF.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Lightyear",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/ox4goZd956BxqJH6iLwhWPL9ct4.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Doctor Strange in the Multiverse of Madness",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Indemnity",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/tVbO8EAbegVtVkrl8wNhzoxS84N.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     ), GameModel(
-       title: "Borrego",
-       poster: URL(string: "https://image.tmdb.org/t/p/w500/kPzQtr5LTheO0mBodIeAXHgthYX.jpg")!,
-       releaseDate: "11 Nov 2024",
-       rating: 4.5
-     )
-]
+struct GameListResponse: Codable {
+    let gameList: [GameResponse]
+    
+    enum CodingKeys: String, CodingKey {
+        case gameList = "results"
+    }
+}
+
+struct GameResponse: Codable {
+    
+    let id: Int
+    let name: String
+    let released: Date
+    let backgroundImage: URL
+    let rating: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case released
+        case backgroundImage = "background_image"
+        case rating
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let path = try container.decode(String.self, forKey: .backgroundImage)
+        backgroundImage = URL(string: path)!
+        
+        let dateString = try container.decode(String.self, forKey: .released)
+        print("dateString")
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        released = dateFormatter.date(from: dateString)!
+        
+        id = try container.decode(Int.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        rating = try container.decode(Double.self, forKey: .rating)
+    }
+}

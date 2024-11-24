@@ -1,35 +1,63 @@
 //
-//  ViewController.swift
+//  GameTableViewController.swift
 //  saranggame
 //
-//  Created by MacBook on 23/11/24.
+//  Created by MacBook on 24/11/24.
 //
+
 
 import UIKit
 
-class ViewController: UIViewController {
+class GameTableViewController: UIViewController {
 
+    
     @IBOutlet weak var gameTableView: UITableView!
+    
+    private var gameList: [GameModel] = []
+    var genreID: String? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
         gameTableView.dataSource = self
         gameTableView.register(UINib(nibName: "GameTableViewCell", bundle: nil), forCellReuseIdentifier: "gameTableViewCell")
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        Task { await getGameList() }
+    }
+    
+    func getGameList() async {
+        let network = NetworkService()
+        do {
+            gameList = try await network.getGameList(genreID)
+            gameTableView.reloadData()
+        } catch {
+            fatalError("Error: connection failed.")
+        }
     }
 }
 
-extension ViewController: UITableViewDataSource {
+extension GameTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        dummyGameList.count
+        gameList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "gameTableViewCell", for: indexPath) as? GameTableViewCell {
-            let game = dummyGameList[indexPath.row]
-            cell.gameName.text = game.title
+            let game = gameList[indexPath.row]
+            cell.gameName.text = game.name
             cell.gameRating.text = "\(game.rating)"
-            cell.gameReleaseDate.text = game.releaseDate
+            
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd MMM yyyy"
+            
+            cell.gameReleaseDate.text = dateFormatter.string(from: game.released)
             
             cell.gameImage.image = game.image
             
@@ -54,7 +82,7 @@ extension ViewController: UITableViewDataSource {
         if (game.state == .new){
             Task {
                 do {
-                    let image = try await imageDownloader.downloadImage(url: game.poster)
+                    let image = try await imageDownloader.downloadImage(url: game.backgroundImage)
                     game.state = .downloaded
                     game.image = image
                     self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
