@@ -56,3 +56,9 @@ struct GenreResponse: Codable {
         gamesCount = try container.decode(Int.self, forKey: .gamesCount)
     }
 }
+
+extension GenreResponse {
+    func toModel() -> GenreModel {
+        return GenreModel(id: id, name: name, imageBackground: imageBackground, gamesCount: gamesCount)
+    }
+}

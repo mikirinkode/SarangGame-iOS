@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GenreTableViewController: UIViewController {
+class GenreTableViewController: SGBaseViewController {
 
     
     @IBOutlet weak var genreTableView: UITableView!

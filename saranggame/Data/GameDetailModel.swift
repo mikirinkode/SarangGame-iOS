@@ -1,51 +1,45 @@
 //
-//  GameModel.swift
+//  GameDetailModel.swift
 //  saranggame
 //
-//  Created by MacBook on 23/11/24.
+//  Created by MacBook on 24/11/24.
 //
-
 import UIKit
 
-enum DownloadState {
-    case new, downloaded, failed
-}
-
-class GameModel {
+class GameDetailModel {
     let id: Int
     let name: String
     let released: Date
     let backgroundImage: URL
     let rating: Double
+    let description: String
+    let genres: [GenreModel]
     
     var image: UIImage?
     var state: DownloadState = .new
     
-    init(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double) {
+    init(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double, description: String, genres: [GenreModel]) {
         self.id  = id
         self.name = name
         self.backgroundImage = backgroundImage
         self.released = released
         self.rating = rating
+        self.description = description
+        self.genres = genres
     }
     
 }
 
-struct GameListResponse: Codable {
-    let gameList: [GameResponse]
-    
-    enum CodingKeys: String, CodingKey {
-        case gameList = "results"
-    }
-}
 
-struct GameResponse: Codable {
+struct GameDetailResponse: Codable {
     
     let id: Int
     let name: String
     let released: Date
     let backgroundImage: URL
     let rating: Double
+    let description: String
+    let genres: [GenreResponse]
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -53,6 +47,8 @@ struct GameResponse: Codable {
         case released
         case backgroundImage = "background_image"
         case rating
+        case description
+        case genres
     }
     
     init(from decoder: Decoder) throws {
@@ -70,5 +66,24 @@ struct GameResponse: Codable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         rating = try container.decode(Double.self, forKey: .rating)
+        
+        description = try container.decode(String.self, forKey: .description)
+        
+        genres = try container.decode([GenreResponse].self, forKey: .genres)
     }
 }
+
+extension GameDetailModel {
+    convenience init(from response: GameDetailResponse) {
+        self.init(
+            id: response.id,
+            name: response.name,
+            backgroundImage: response.backgroundImage,
+            released: response.released,
+            rating: response.rating,
+            description: response.description,
+            genres: response.genres.map { $0.toModel() }
+        )
+    }
+}
+

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GameTableViewController: UIViewController {
+class GameTableViewController: SGBaseViewController {
 
     
     @IBOutlet weak var gameTableView: UITableView!
@@ -21,6 +21,7 @@ class GameTableViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         gameTableView.dataSource = self
+        gameTableView.delegate = self
         gameTableView.register(UINib(nibName: "GameTableViewCell", bundle: nil), forCellReuseIdentifier: "gameTableViewCell")
         
     }
@@ -95,3 +96,19 @@ extension GameTableViewController: UITableViewDataSource {
     }
 }
 
+extension GameTableViewController: UITableViewDelegate {
+  func tableView(
+    _ tableView: UITableView,
+    didSelectRowAt indexPath: IndexPath
+  ) {
+      performSegue(withIdentifier: "moveToGameDetail", sender: "\(gameList[indexPath.row].id)")
+  }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "moveToGameDetail" {
+            if let gameDetailViewController = segue.destination as? GameDetailViewController {
+                gameDetailViewController.gameID = sender as? String
+            }
+        }
+    }
+}
