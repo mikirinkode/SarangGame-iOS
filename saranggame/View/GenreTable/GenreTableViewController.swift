@@ -11,6 +11,7 @@ class GenreTableViewController: SGBaseViewController {
 
     
     @IBOutlet weak var genreTableView: UITableView!
+    @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
     
     private var genreList: [GenreModel] = []
     
@@ -25,10 +26,21 @@ class GenreTableViewController: SGBaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        Task { await getGenreList() }
+        if genreList.isEmpty {
+            Task { await getGenreList() }
+        }
     }
     
     func getGenreList() async {
+        fetchIndicatorLoading.isHidden = false
+        fetchIndicatorLoading.startAnimating()
+        
+        defer {
+            fetchIndicatorLoading.isHidden = true
+            fetchIndicatorLoading.stopAnimating()
+        }
+        
+        
         let network = NetworkService()
         do {
             genreList = try await network.getGenreList()

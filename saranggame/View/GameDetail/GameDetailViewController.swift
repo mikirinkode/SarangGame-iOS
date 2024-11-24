@@ -16,6 +16,8 @@ class GameDetailViewController: UIViewController {
     @IBOutlet weak var gameReleasedDateLabel: UILabel!
     @IBOutlet weak var gameDescriptionLabel: UILabel!
     
+    @IBOutlet weak var detailContentView: UIView!
+    @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
     @IBOutlet weak var imageIndicatorLoading: UIActivityIndicatorView!
     
     var gameID: String? = nil
@@ -25,6 +27,7 @@ class GameDetailViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        backgroundImage.layer.cornerRadius = 16
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,6 +37,16 @@ class GameDetailViewController: UIViewController {
     }
     
     func getGameDetail() async {
+        detailContentView.isHidden = true
+        fetchIndicatorLoading.isHidden = false
+        fetchIndicatorLoading.startAnimating()
+        
+        defer {
+            detailContentView.isHidden = false
+            fetchIndicatorLoading.isHidden = true
+            fetchIndicatorLoading.stopAnimating()
+        }
+        
         let network = NetworkService()
         do {
             game = try await network.getGameDetail(gameID)

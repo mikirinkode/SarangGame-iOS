@@ -12,6 +12,7 @@ class GameTableViewController: SGBaseViewController {
 
     
     @IBOutlet weak var gameTableView: UITableView!
+    @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
     
     private var gameList: [GameModel] = []
     var genreID: String? = nil
@@ -29,10 +30,20 @@ class GameTableViewController: SGBaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        Task { await getGameList() }
+        if gameList.isEmpty {
+            Task { await getGameList() }
+        }
     }
     
     func getGameList() async {
+        fetchIndicatorLoading.isHidden = false
+        fetchIndicatorLoading.startAnimating()
+        
+        defer {
+            fetchIndicatorLoading.isHidden = true
+            fetchIndicatorLoading.stopAnimating()
+        }
+        
         let network = NetworkService()
         do {
             gameList = try await network.getGameList(genreID)
