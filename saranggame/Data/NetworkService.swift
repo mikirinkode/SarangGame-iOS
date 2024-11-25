@@ -7,11 +7,17 @@
 
 import Foundation
 
+enum NetworkError: Error {
+    case invalidResponse
+    case requestFailed(String)
+}
+
 class NetworkService {
     let apiKey = ""
     let baseURL = "https://api.rawg.io/api"
     
     func getGenreList() async throws -> [GenreModel] {
+        
         var components = URLComponents(string: "\(baseURL)/genres")!
         components.queryItems = [
             URLQueryItem(name: "key", value: apiKey)
@@ -20,13 +26,17 @@ class NetworkService {
         let request = URLRequest(url: components.url!)
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            fatalError("Error: Failed fetching genre list data")
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+             throw NetworkError.invalidResponse
         }
         
-        let decoder = JSONDecoder()
-        let result = try decoder.decode(GenreListResponse.self, from: data)
-        return genreListMapper(input: result.genreList)
+        do {
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GenreListResponse.self, from: data)
+            return genreListMapper(input: result.genreList)
+        } catch {
+            throw NetworkError.requestFailed("We encountered an unexpected issue. Please try again.")
+        }
     }
     
     func getGameList(_ genreID: String?) async throws -> [GameModel] {
@@ -45,13 +55,17 @@ class NetworkService {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            fatalError("Error: Failed fetching game list data")
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
         }
         
-        let decoder = JSONDecoder()
-        let result = try decoder.decode(GameListResponse.self, from: data)
-        return gameListMapper(input: result.gameList)
+        do {
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GameListResponse.self, from: data)
+            return gameListMapper(input: result.gameList)
+        } catch {
+            throw NetworkError.requestFailed("We encountered an unexpected issue. Please try again.")
+        }
     }
     
     func getGameDetail(_ gameID: String?) async throws -> GameDetailModel {
@@ -67,13 +81,17 @@ class NetworkService {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            fatalError("Error: failed to fetch game detail")
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
         }
         
-        let decoder = JSONDecoder()
-        let result = try decoder.decode(GameDetailResponse.self, from: data)
-        return GameDetailModel(from: result)
+        do {
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GameDetailResponse.self, from: data)
+            return GameDetailModel(from: result)
+        } catch {
+            throw NetworkError.requestFailed("We encountered an unexpected issue. Please try again.")
+        }
     }
 }
 

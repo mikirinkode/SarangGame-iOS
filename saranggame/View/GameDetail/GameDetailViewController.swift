@@ -20,6 +20,9 @@ class GameDetailViewController: UIViewController {
     @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
     @IBOutlet weak var imageIndicatorLoading: UIActivityIndicatorView!
     
+    @IBOutlet weak var errorView: UIStackView!
+    @IBOutlet weak var errorDescriptionLabel: UILabel!
+    
     var gameID: String? = nil
     var game: GameDetailModel? = nil
     
@@ -40,6 +43,7 @@ class GameDetailViewController: UIViewController {
         detailContentView.isHidden = true
         fetchIndicatorLoading.isHidden = false
         fetchIndicatorLoading.startAnimating()
+        errorView.isHidden = true
         
         defer {
             detailContentView.isHidden = false
@@ -53,12 +57,18 @@ class GameDetailViewController: UIViewController {
             if let game = game {
                 initView(game: game)
             }
+        } catch NetworkError.invalidResponse {
+            showError(message: "Invalid response from the server. Please try again.")
+        } catch NetworkError.requestFailed(let message) {
+            showError(message: message)
         } catch {
-            fatalError("Error: connection failed")
+            showError(message: "Unexpected error: \(error.localizedDescription)")
         }
     }
     
     func initView(game: GameDetailModel){
+        detailContentView.isHidden = false
+        
         gameNameLabe.text = game.name
         gameRatingLabel.text = "\(game.rating)/5"
 
@@ -99,6 +109,15 @@ class GameDetailViewController: UIViewController {
     fileprivate func stripHTML(from html: String) -> String {
         let regex = try! NSRegularExpression(pattern: "<[^>]+>", options: .caseInsensitive)
         return regex.stringByReplacingMatches(in: html, options: [], range: NSRange(location: 0, length: html.count), withTemplate: "")
+    }
+    
+    func showError(message: String) {
+        errorDescriptionLabel.text = message
+        errorView.isHidden = false
+    }
+    
+    @IBAction func tryAgainButtonOnClick(_ sender: Any) {
+        Task { await getGameDetail() }
     }
 }
 

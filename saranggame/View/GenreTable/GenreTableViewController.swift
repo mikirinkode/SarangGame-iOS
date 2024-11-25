@@ -13,6 +13,9 @@ class GenreTableViewController: SGBaseViewController {
     @IBOutlet weak var genreTableView: UITableView!
     @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
     
+    @IBOutlet weak var errorView: UIStackView!
+    @IBOutlet weak var errorDescriptionLabel: UILabel!
+    
     private var genreList: [GenreModel] = []
     
     override func viewDidLoad() {
@@ -34,6 +37,7 @@ class GenreTableViewController: SGBaseViewController {
     func getGenreList() async {
         fetchIndicatorLoading.isHidden = false
         fetchIndicatorLoading.startAnimating()
+        errorView.isHidden = true
         
         defer {
             fetchIndicatorLoading.isHidden = true
@@ -45,9 +49,22 @@ class GenreTableViewController: SGBaseViewController {
         do {
             genreList = try await network.getGenreList()
             genreTableView.reloadData()
+        } catch NetworkError.invalidResponse {
+            showError(message: "Invalid response from the server. Please try again.")
+        } catch NetworkError.requestFailed(let message) {
+            showError(message: message)
         } catch {
-            fatalError("Error: connection failed.")
+            showError(message: "Unexpected error: \(error.localizedDescription)")
         }
+    }
+    
+    func showError(message: String) {
+        errorDescriptionLabel.text = message
+        errorView.isHidden = false
+    }
+    
+    @IBAction func tryAgainButtonOnClick(_ sender: Any) {
+            Task { await getGenreList() }
     }
 }
 

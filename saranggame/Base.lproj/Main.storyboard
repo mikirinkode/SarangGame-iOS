@@ -22,6 +22,36 @@
                                 <rect key="frame" x="0.0" y="103" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="feH-Cr-2Nq">
+                                <rect key="frame" x="24" y="361.66666666666669" width="345" height="128.66666666666669"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ggh-kc-KIG">
+                                        <rect key="frame" x="0.0" y="0.0" width="345" height="70.333333333333329"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An Error Occured" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="okC-zD-ztg">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="24"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Failed to fetch data from Network, check your internet connection and try again" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jt2-FN-9F6">
+                                                <rect key="frame" x="0.0" y="32" width="345" height="38.333333333333343"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uik-aX-Gzk">
+                                        <rect key="frame" x="0.0" y="94.333333333333314" width="345" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Try Again"/>
+                                        <connections>
+                                            <action selector="tryAgainButtonOnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ct1-y0-lr0"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="Usc-Fi-oNQ">
                                 <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
                             </activityIndicatorView>
@@ -29,17 +59,23 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="feH-Cr-2Nq" secondAttribute="trailing" constant="24" id="3Vh-Qh-0jW"/>
+                            <constraint firstItem="feH-Cr-2Nq" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="61I-5s-pCy"/>
+                            <constraint firstItem="feH-Cr-2Nq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="EOR-cX-mSm"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Fju-AE-JGj" secondAttribute="bottom" id="Ql2-IP-hop"/>
                             <constraint firstItem="Usc-Fi-oNQ" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="W1K-pd-Cga"/>
                             <constraint firstItem="Usc-Fi-oNQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="eKR-r2-fsB"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Fju-AE-JGj" secondAttribute="trailing" id="eqk-P8-GEp"/>
                             <constraint firstItem="Fju-AE-JGj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="kg4-NK-uh6"/>
+                            <constraint firstItem="feH-Cr-2Nq" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="24" id="mOh-Wn-Klm"/>
                             <constraint firstItem="Fju-AE-JGj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="yRx-Jk-EbQ"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Home" image="gamecontroller" catalog="system" id="7oa-ia-zrR"/>
                     <navigationItem key="navigationItem" title="SarangGame!" id="rJZ-Hp-wGL"/>
                     <connections>
+                        <outlet property="errorDescriptionLabel" destination="Jt2-FN-9F6" id="qS8-Wf-orb"/>
+                        <outlet property="errorView" destination="feH-Cr-2Nq" id="GU0-gO-3O5"/>
                         <outlet property="fetchIndicatorLoading" destination="Usc-Fi-oNQ" id="IFi-nY-wum"/>
                         <outlet property="genreTableView" destination="Fju-AE-JGj" id="BSf-uy-csf"/>
                         <segue destination="s4u-5c-ohf" kind="show" identifier="moveToGameList" id="oSC-qg-kVi"/>
@@ -374,20 +410,57 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="mRC-Db-ypi">
                                 <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
                             </activityIndicatorView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="fRn-Sz-abW">
+                                <rect key="frame" x="16" y="361.66666666666669" width="361" height="128.66666666666669"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="4uV-xa-ifR">
+                                        <rect key="frame" x="0.0" y="0.0" width="361" height="70.333333333333329"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An Error Occured" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1aJ-2M-ynQ">
+                                                <rect key="frame" x="0.0" y="0.0" width="361" height="24"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Failed to fetch data from Network, check your internet connection and try again" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dwS-rp-g7q">
+                                                <rect key="frame" x="0.0" y="32" width="361" height="38.333333333333343"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CGk-8y-3gb">
+                                        <rect key="frame" x="0.0" y="94.333333333333314" width="361" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Try Again"/>
+                                        <connections>
+                                            <action selector="tryAgainButtonOnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LVA-dU-lus"/>
+                                            <action selector="tryAgainButtonOnClick:" destination="s4u-5c-ohf" eventType="touchUpInside" id="cMo-R5-G77"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aRQ-Ta-fVF"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="mRC-Db-ypi" firstAttribute="centerY" secondItem="3PI-r6-P2k" secondAttribute="centerY" id="6Sq-lY-MP0"/>
                             <constraint firstItem="aRQ-Ta-fVF" firstAttribute="bottom" secondItem="78j-ni-OTd" secondAttribute="bottom" id="L2i-un-jHa"/>
+                            <constraint firstItem="fRn-Sz-abW" firstAttribute="centerY" secondItem="3PI-r6-P2k" secondAttribute="centerY" id="Ogu-TU-yCX"/>
                             <constraint firstItem="78j-ni-OTd" firstAttribute="leading" secondItem="aRQ-Ta-fVF" secondAttribute="leading" id="f52-9k-cov"/>
+                            <constraint firstItem="fRn-Sz-abW" firstAttribute="centerX" secondItem="3PI-r6-P2k" secondAttribute="centerX" id="fll-V1-6OC"/>
                             <constraint firstItem="78j-ni-OTd" firstAttribute="top" secondItem="aRQ-Ta-fVF" secondAttribute="top" id="kaL-kL-Ne6"/>
+                            <constraint firstAttribute="trailing" secondItem="fRn-Sz-abW" secondAttribute="trailing" constant="16" id="mZm-tb-Bkk"/>
                             <constraint firstItem="mRC-Db-ypi" firstAttribute="centerX" secondItem="3PI-r6-P2k" secondAttribute="centerX" id="qYL-6l-HDH"/>
+                            <constraint firstItem="fRn-Sz-abW" firstAttribute="leading" secondItem="3PI-r6-P2k" secondAttribute="leading" constant="16" id="tWj-Z0-ozW"/>
                             <constraint firstItem="aRQ-Ta-fVF" firstAttribute="trailing" secondItem="78j-ni-OTd" secondAttribute="trailing" id="wHr-D9-uUE"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Game List" id="Er4-Ev-2Yg"/>
                     <connections>
+                        <outlet property="errorDescriptionLabel" destination="dwS-rp-g7q" id="QDl-KO-QL5"/>
+                        <outlet property="errorView" destination="fRn-Sz-abW" id="WQL-z1-YgP"/>
                         <outlet property="fetchIndicatorLoading" destination="mRC-Db-ypi" id="ajO-ep-VNG"/>
                         <outlet property="gameTableView" destination="78j-ni-OTd" id="wNi-7O-XLv"/>
                         <segue destination="PZo-Rq-jrT" kind="show" identifier="moveToGameDetail" id="mzg-8C-05V"/>
@@ -408,7 +481,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xgd-Re-sGM">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DK4-ns-VjF">
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DK4-ns-VjF">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="1500"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3cg-Xg-tpb">
@@ -531,16 +604,51 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="gfa-CN-hW1">
                                 <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
                             </activityIndicatorView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="QDW-Ue-j2n">
+                                <rect key="frame" x="16" y="361.66666666666669" width="361" height="128.66666666666669"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="eAb-hF-K7J">
+                                        <rect key="frame" x="0.0" y="0.0" width="361" height="70.333333333333329"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An Error Occured" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JxE-FY-nej">
+                                                <rect key="frame" x="0.0" y="0.0" width="361" height="24"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Failed to fetch data from Network, check your internet connection and try again" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RwK-n3-BNM">
+                                                <rect key="frame" x="0.0" y="32" width="361" height="38.333333333333343"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bR2-yB-SUz">
+                                        <rect key="frame" x="0.0" y="94.333333333333314" width="361" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Try Again"/>
+                                        <connections>
+                                            <action selector="tryAgainButtonOnClick:" destination="PZo-Rq-jrT" eventType="touchUpInside" id="kMj-A9-EoM"/>
+                                            <action selector="tryAgainButtonOnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wB4-fI-jsX"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="mJr-jU-Ih1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="QDW-Ue-j2n" firstAttribute="centerY" secondItem="bug-Ww-HMe" secondAttribute="centerY" id="0SI-5u-aAr"/>
+                            <constraint firstAttribute="trailing" secondItem="QDW-Ue-j2n" secondAttribute="trailing" constant="16" id="2Zj-5a-eM6"/>
                             <constraint firstItem="xgd-Re-sGM" firstAttribute="centerY" secondItem="gfa-CN-hW1" secondAttribute="centerY" id="5BF-da-uC7"/>
+                            <constraint firstItem="QDW-Ue-j2n" firstAttribute="centerX" secondItem="bug-Ww-HMe" secondAttribute="centerX" id="GjK-eQ-ctl"/>
                             <constraint firstItem="xgd-Re-sGM" firstAttribute="leading" secondItem="mJr-jU-Ih1" secondAttribute="leading" id="Gvt-Td-zmD"/>
                             <constraint firstItem="xgd-Re-sGM" firstAttribute="trailing" secondItem="mJr-jU-Ih1" secondAttribute="trailing" id="Mcd-Dn-0w5"/>
                             <constraint firstItem="xgd-Re-sGM" firstAttribute="top" secondItem="bug-Ww-HMe" secondAttribute="top" id="NYZ-RV-YGf"/>
                             <constraint firstItem="xgd-Re-sGM" firstAttribute="centerX" secondItem="gfa-CN-hW1" secondAttribute="centerX" id="PuB-ju-BAU"/>
                             <constraint firstItem="DK4-ns-VjF" firstAttribute="width" secondItem="bug-Ww-HMe" secondAttribute="width" id="Sb3-kO-Fnc"/>
+                            <constraint firstItem="QDW-Ue-j2n" firstAttribute="leading" secondItem="bug-Ww-HMe" secondAttribute="leading" constant="16" id="Txo-U7-RUy"/>
                             <constraint firstAttribute="bottom" secondItem="xgd-Re-sGM" secondAttribute="bottom" id="sQS-yH-lCY"/>
                         </constraints>
                     </view>
@@ -549,6 +657,8 @@
                     <connections>
                         <outlet property="backgroundImage" destination="3cg-Xg-tpb" id="ryl-WI-uew"/>
                         <outlet property="detailContentView" destination="DK4-ns-VjF" id="dyk-VI-soA"/>
+                        <outlet property="errorDescriptionLabel" destination="RwK-n3-BNM" id="xYY-cT-0ji"/>
+                        <outlet property="errorView" destination="QDW-Ue-j2n" id="cJn-69-aOc"/>
                         <outlet property="fetchIndicatorLoading" destination="gfa-CN-hW1" id="pco-0U-j6E"/>
                         <outlet property="gameDescriptionLabel" destination="CVN-yp-o9M" id="kSZ-Q6-Jkx"/>
                         <outlet property="gameGenresLabel" destination="ixH-aZ-Jib" id="KWj-vX-D14"/>

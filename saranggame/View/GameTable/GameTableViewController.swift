@@ -14,6 +14,9 @@ class GameTableViewController: SGBaseViewController {
     @IBOutlet weak var gameTableView: UITableView!
     @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
     
+    @IBOutlet weak var errorView: UIStackView!
+    @IBOutlet weak var errorDescriptionLabel: UILabel!
+    
     private var gameList: [GameModel] = []
     var genreID: String? = nil
     
@@ -38,6 +41,7 @@ class GameTableViewController: SGBaseViewController {
     func getGameList() async {
         fetchIndicatorLoading.isHidden = false
         fetchIndicatorLoading.startAnimating()
+        errorView.isHidden = true
         
         defer {
             fetchIndicatorLoading.isHidden = true
@@ -48,9 +52,22 @@ class GameTableViewController: SGBaseViewController {
         do {
             gameList = try await network.getGameList(genreID)
             gameTableView.reloadData()
+        } catch NetworkError.invalidResponse {
+            showError(message: "Invalid response from the server. Please try again.")
+        } catch NetworkError.requestFailed(let message) {
+            showError(message: message)
         } catch {
-            fatalError("Error: connection failed.")
+            showError(message: "Unexpected error: \(error.localizedDescription)")
         }
+    }
+    
+    func showError(message: String) {
+        errorDescriptionLabel.text = message
+        errorView.isHidden = false
+    }
+    
+    @IBAction func tryAgainButtonOnClick(_ sender: Any) {
+        Task { await getGameList() }
     }
 }
 
