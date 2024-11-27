@@ -325,16 +325,20 @@
         <!--Wishlist-->
         <scene sceneID="Z4m-7K-WtE">
             <objects>
-                <viewController id="bwO-Xi-ewf" customClass="WishlistViewController" customModule="saranggame" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="bwO-Xi-ewf" customClass="WishlistTableViewController" customModule="saranggame" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jez-qM-0Sl">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="KUc-Z9-ZQ2">
-                                <rect key="frame" x="73.666666666666686" y="312" width="246" height="228"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="XHP-4x-bza">
+                                <rect key="frame" x="0.0" y="103" width="393" height="666"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="KUc-Z9-ZQ2">
+                                <rect key="frame" x="24" y="331" width="345" height="190"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gamecontroller" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Ttc-by-RfS">
-                                        <rect key="frame" x="85.333333333333329" y="1.6666666666666643" width="74.999999999999986" height="72"/>
+                                        <rect key="frame" x="135" y="1.6666666666666643" width="75" height="72"/>
                                         <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="75" id="3RG-2U-rCZ"/>
@@ -342,36 +346,40 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wistlist is Empty" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GA3-1T-5bw">
-                                        <rect key="frame" x="37.666666666666657" y="99" width="170.33333333333334" height="26.333333333333329"/>
+                                        <rect key="frame" x="87.333333333333329" y="99" width="170.33333333333337" height="26.333333333333329"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's find game for your wishlist." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jfU-rr-cFe">
-                                        <rect key="frame" x="0.0" y="149.33333333333331" width="246" height="20.333333333333343"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Explore and find your dream game on Game Tab." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jfU-rr-cFe">
+                                        <rect key="frame" x="28.333333333333343" y="149.33333333333331" width="288.33333333333326" height="40.666666666666657"/>
                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iBc-2S-VZd">
-                                        <rect key="frame" x="69.999999999999986" y="193.66666666666669" width="106.00000000000001" height="34.333333333333343"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" title="Find Game">
-                                            <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </buttonConfiguration>
-                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rs0-Dh-DXG"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="rs0-Dh-DXG" firstAttribute="trailing" secondItem="KUc-Z9-ZQ2" secondAttribute="trailing" constant="24" id="I1F-zK-YdW"/>
+                            <constraint firstItem="XHP-4x-bza" firstAttribute="top" secondItem="rs0-Dh-DXG" secondAttribute="top" id="Lrm-ki-2hV"/>
                             <constraint firstItem="KUc-Z9-ZQ2" firstAttribute="centerX" secondItem="jez-qM-0Sl" secondAttribute="centerX" id="P3B-Dm-X9y"/>
+                            <constraint firstItem="rs0-Dh-DXG" firstAttribute="bottom" secondItem="XHP-4x-bza" secondAttribute="bottom" id="UXf-jw-xxc"/>
+                            <constraint firstItem="XHP-4x-bza" firstAttribute="leading" secondItem="rs0-Dh-DXG" secondAttribute="leading" id="dpY-65-53K"/>
+                            <constraint firstItem="KUc-Z9-ZQ2" firstAttribute="leading" secondItem="rs0-Dh-DXG" secondAttribute="leading" constant="24" id="sLo-kA-lQ9"/>
                             <constraint firstItem="KUc-Z9-ZQ2" firstAttribute="centerY" secondItem="jez-qM-0Sl" secondAttribute="centerY" id="vNX-1T-eqG"/>
+                            <constraint firstItem="rs0-Dh-DXG" firstAttribute="trailing" secondItem="XHP-4x-bza" secondAttribute="trailing" id="zJH-nu-SlT"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Wishlist" image="heart" catalog="system" id="tWv-9c-89i"/>
+                    <connections>
+                        <outlet property="emptyView" destination="KUc-Z9-ZQ2" id="gqp-Ke-ugK"/>
+                        <outlet property="wishlistTableView" destination="XHP-4x-bza" id="YM0-f6-z2G"/>
+                        <segue destination="PZo-Rq-jrT" kind="show" identifier="moveToGameDetail" id="B33-tM-Dbi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iHU-5P-6Ib" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -604,6 +612,18 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="gfa-CN-hW1">
                                 <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
                             </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adD-3T-ozc">
+                                <rect key="frame" x="316.66666666666669" y="733.66666666666663" width="52.333333333333314" height="52.333333333333371"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" image="heart" catalog="system" imagePadding="0.0" cornerStyle="capsule">
+                                    <directionalEdgeInsets key="contentInsets" top="16" leading="16" bottom="16" trailing="16"/>
+                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="baseBackgroundColor" name="AccentColor"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="wishlistButtonOnClick:" destination="PZo-Rq-jrT" eventType="touchUpInside" id="hw2-JU-9mc"/>
+                                </connections>
+                            </button>
                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="QDW-Ue-j2n">
                                 <rect key="frame" x="16" y="361.66666666666669" width="361" height="128.66666666666669"/>
                                 <subviews>
@@ -649,6 +669,8 @@
                             <constraint firstItem="xgd-Re-sGM" firstAttribute="centerX" secondItem="gfa-CN-hW1" secondAttribute="centerX" id="PuB-ju-BAU"/>
                             <constraint firstItem="DK4-ns-VjF" firstAttribute="width" secondItem="bug-Ww-HMe" secondAttribute="width" id="Sb3-kO-Fnc"/>
                             <constraint firstItem="QDW-Ue-j2n" firstAttribute="leading" secondItem="bug-Ww-HMe" secondAttribute="leading" constant="16" id="Txo-U7-RUy"/>
+                            <constraint firstItem="mJr-jU-Ih1" firstAttribute="trailing" secondItem="adD-3T-ozc" secondAttribute="trailing" constant="24" id="c0s-Gg-SeE"/>
+                            <constraint firstItem="mJr-jU-Ih1" firstAttribute="bottom" secondItem="adD-3T-ozc" secondAttribute="bottom" constant="32" id="daT-36-aGG"/>
                             <constraint firstAttribute="bottom" secondItem="xgd-Re-sGM" secondAttribute="bottom" id="sQS-yH-lCY"/>
                         </constraints>
                     </view>
@@ -666,6 +688,7 @@
                         <outlet property="gameRatingLabel" destination="RMm-KA-FiR" id="ljf-8j-yuz"/>
                         <outlet property="gameReleasedDateLabel" destination="p0e-tA-xjG" id="OJS-Sg-iyG"/>
                         <outlet property="imageIndicatorLoading" destination="Kpm-s1-9Hw" id="jAQ-hj-gc8"/>
+                        <outlet property="wishlistButton" destination="adD-3T-ozc" id="M1m-v3-Ok7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="56L-lj-KxA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -694,6 +717,9 @@
             <point key="canvasLocation" x="1063.3587786259541" y="3.5211267605633805"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="B33-tM-Dbi"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="chevron.right" catalog="system" width="97" height="128"/>
         <image name="document.fill" catalog="system" width="115" height="128"/>

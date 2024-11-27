@@ -20,6 +20,7 @@ class GameModel {
     
     var image: UIImage?
     var state: DownloadState = .new
+    var isOnWishlist: Bool = false
     
     init(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double) {
         self.id  = id
