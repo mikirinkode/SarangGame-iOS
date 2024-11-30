@@ -104,7 +104,8 @@ class GameDetailViewController: UIViewController {
         gameNameLabe.text = game.name
         gameRatingLabel.text = "\(game.rating)/5"
 
-        gameGenresLabel.text = game.genres.map { $0.name }.joined(separator: ", ")
+        // TODO
+//        gameGenresLabel.text = game.genres.map { $0.name }.joined(separator: ", ")
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM yyyy"

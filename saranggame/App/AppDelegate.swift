@@ -34,3 +34,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+// SarangGameApp project structure
+// Data/
+// Data/Response/
+// - GenreListResponse.swift
+// - GenreResponse.swift
+// Data/Repository/
+// - GameRepository.swift
+// - GameRepositoryProtocol.swift
+// Data/Source/
+// - GameDataSource.swift
+// - GameDataSourceProtocol.swift
+// - NetworkService.swift
+// Data/Utils/
+// - ImageService.swift
+//
+// DI
+// Injection.swift
+//
+// Domain/
+// Domain/Entity/
+// - GenreEntity.swift
+// Domain/UseCase/
+// - GameInteractor.swift
+// - GamseUseCase.swift
+//
+// Presentation/
+// Presentation/Controller/
+// - GenreTableViewController.swift
+// Presentation/Presenter/
+// - GamePresenter.swift
+// - GamePresenterProtocol.swift
+// Presentation/UIModel/
+// - GenreUIModel.swift
+// Presentation/View/
+// - GenreTableViewCell.swift
+// - GenreTavleViewCell.xib

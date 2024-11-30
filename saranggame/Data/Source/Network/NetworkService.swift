@@ -16,7 +16,8 @@ class NetworkService {
     let apiKey = ""
     let baseURL = "https://api.rawg.io/api"
     
-    func getGenreList() async throws -> [GenreModel] {
+    
+    func getGenreList() async throws -> [GenreEntity] {
         
         var components = URLComponents(string: "\(baseURL)/genres")!
         components.queryItems = [
@@ -33,7 +34,8 @@ class NetworkService {
         do {
             let decoder = JSONDecoder()
             let result = try decoder.decode(GenreListResponse.self, from: data)
-            return genreListMapper(input: result.genreList)
+            print("result  count: \(result.genreList.count)")
+            return result.toEntities()
         } catch {
             throw NetworkError.requestFailed("We encountered an unexpected issue. Please try again.")
         }
@@ -96,15 +98,6 @@ class NetworkService {
 }
 
 extension NetworkService {
-    
-    fileprivate func genreListMapper(
-        input genreListResponse: [GenreResponse]
-    ) -> [GenreModel] {
-        return genreListResponse.map { result in
-            return GenreModel(id: result.id, name: result.name, imageBackground: result.imageBackground, gamesCount: result.gamesCount)
-        }
-    }
-    
     fileprivate func gameListMapper(
         input gameListResponse: [GameResponse]
     ) -> [GameModel] {
@@ -128,8 +121,8 @@ extension NetworkService {
             backgroundImage: gameResponse.backgroundImage,
             released: gameResponse.released,
             rating: gameResponse.rating,
-            description: gameResponse.description,
-            genres: gameResponse.genres.map { $0.toModel() }
+            description: gameResponse.description
+//            genres: gameResponse.genres.map { $0.toModel()}
         )
     }
 }

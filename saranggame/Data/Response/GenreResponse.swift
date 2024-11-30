@@ -1,35 +1,11 @@
 //
-//  GenreModel.swift
+//  GenreResponse.swift
 //  saranggame
 //
-//  Created by MacBook on 24/11/24.
+//  Created by MacBook on 01/12/24.
 //
+
 import UIKit
-
-class GenreModel {
-    let id: Int
-    let gamesCount: Int
-    let name: String
-    let imageBackground: URL
-    
-    var image: UIImage?
-    var state: DownloadState = .new
-    
-    init (id: Int, name: String, imageBackground: URL, gamesCount: Int){
-        self.id = id
-        self.name = name
-        self.imageBackground = imageBackground
-        self.gamesCount = gamesCount
-    }
-}
-
-struct GenreListResponse: Codable {
-    let genreList: [GenreResponse]
-    
-    enum CodingKeys: String, CodingKey {
-        case genreList = "results"
-    }
-}
 
 struct GenreResponse: Codable {
     let id: Int
@@ -58,7 +34,7 @@ struct GenreResponse: Codable {
 }
 
 extension GenreResponse {
-    func toModel() -> GenreModel {
-        return GenreModel(id: id, name: name, imageBackground: imageBackground, gamesCount: gamesCount)
+    func toEntity() -> GenreEntity {
+        return GenreEntity(id: id, name: name, gamesCount: gamesCount, imageBackground: imageBackground)
     }
 }
