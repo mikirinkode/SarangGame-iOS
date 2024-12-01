@@ -15,7 +15,7 @@ class GameDetailUIModel {
     let rating: String
     let description: String
     let genres: String
-    
+
     var image: UIImage?
     var state: DownloadState = .new
     
@@ -37,8 +37,8 @@ class GameDetailUIModel {
     }
     
     static func formatDescription(_ description: String) -> String {
-        let regex = try! NSRegularExpression(pattern: "<[^>]+>", options: .caseInsensitive)
-        return regex.stringByReplacingMatches(in: description, options: [], range: NSRange(location: 0, length: description.count), withTemplate: "")
+        let regex = try? NSRegularExpression(pattern: "<[^>]+>", options: .caseInsensitive)
+        return regex?.stringByReplacingMatches(in: description, options: [], range: NSRange(location: 0, length: description.count), withTemplate: "") ?? description
     }
     
     static func formatGenres(_ genres: [GenreEntity]) -> String {
@@ -48,7 +48,13 @@ class GameDetailUIModel {
 
 extension GameDetailUIModel {
     func toGameEntity() -> GameEntity {
-        return GameEntity(id: id, name: name, released: GameDetailUIModel.parseReleasedDate(self.released), backgroundImage: backgroundImage, rating: Double(self.rating.split(separator: "/").first ?? "0") ?? 0.0)
+        return GameEntity(
+            id: id,
+            name: name,
+            released: GameDetailUIModel.parseReleasedDate(self.released),
+            backgroundImage: backgroundImage,
+            rating: Double(self.rating.split(separator: "/").first ?? "0") ?? 0.0
+        )
     }
     
     private static func parseReleasedDate(_ released: String) -> Date {
