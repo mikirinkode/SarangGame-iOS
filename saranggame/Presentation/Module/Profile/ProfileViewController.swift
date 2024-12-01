@@ -12,12 +12,10 @@ class ProfileViewController: SGBaseViewController {
     @IBOutlet weak var profileImageView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
         profileImageView.layer.cornerRadius = profileImageView.frame.height/2
         // Do any additional setup after loading the view.
     }
-    
 
     /*
     // MARK: - Navigation

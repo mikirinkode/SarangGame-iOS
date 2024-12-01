@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FAB23F1F2CFC5F98009C1400 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = FAB23F1E2CFC5F98009C1400 /* .swiftlint.yml */; };
 		FAEE60E82CF6DCFA00EA32A6 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = FAEE60E72CF6DCFA00EA32A6 /* Toast */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		FA66DFB32CF1C47D00EF241E /* saranggame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = saranggame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA66DFC92CF1C48000EF241E /* saranggameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = saranggameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA66DFD32CF1C48000EF241E /* saranggameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = saranggameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAB23F1E2CFC5F98009C1400 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,6 +95,7 @@
 		FA66DFAA2CF1C47D00EF241E = {
 			isa = PBXGroup;
 			children = (
+				FAB23F1E2CFC5F98009C1400 /* .swiftlint.yml */,
 				FA66DFB52CF1C47D00EF241E /* saranggame */,
 				FA66DFCC2CF1C48000EF241E /* saranggameTests */,
 				FA66DFD62CF1C48000EF241E /* saranggameUITests */,
@@ -235,6 +238,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAB23F1F2CFC5F98009C1400 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

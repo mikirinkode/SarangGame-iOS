@@ -8,7 +8,7 @@
 class GenreUseCaseInteractor: GenreUseCase {
     private let genreRepository: GenreRepositoryProtocol
     
-    init(repository: GenreRepositoryProtocol){
+    init(repository: GenreRepositoryProtocol) {
         self.genreRepository = repository
     }
     

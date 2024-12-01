@@ -38,7 +38,12 @@ class GameDetailUIModel {
     
     static func formatDescription(_ description: String) -> String {
         let regex = try? NSRegularExpression(pattern: "<[^>]+>", options: .caseInsensitive)
-        return regex?.stringByReplacingMatches(in: description, options: [], range: NSRange(location: 0, length: description.count), withTemplate: "") ?? description
+        return regex?.stringByReplacingMatches(
+            in: description,
+            options: [],
+            range: NSRange(location: 0, length: description.count),
+            withTemplate: ""
+        ) ?? description
     }
     
     static func formatGenres(_ genres: [GenreEntity]) -> String {

@@ -18,8 +18,8 @@ class LocalService {
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Game")
         
-        container.loadPersistentStores{_, error in guard error == nil else {
-            fatalError("Unresolved error \(error!)") // TODO
+        container.loadPersistentStores {_, error in guard error == nil else {
+            fatalError("Unresolved error \(error!)")
         }}
         
         container.viewContext.automaticallyMergesChangesFromParent = false
@@ -49,7 +49,7 @@ class LocalService {
                     id: Int(result.value(forKeyPath: "id") as? Int32 ?? 0),
                     name: result.value(forKeyPath: "name") as? String ?? "",
                     released: result.value(forKeyPath: "released") as? Date ?? Date.now,
-                    backgroundImage: result.value(forKeyPath: "backgroundImage") as? URL ?? URL(string:"")!,
+                    backgroundImage: result.value(forKeyPath: "backgroundImage") as? URL ?? URL(string: "")!,
                     rating: result.value(forKeyPath: "rating") as? Double ?? 0.0
                 )
             }

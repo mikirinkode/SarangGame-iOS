@@ -9,7 +9,6 @@ import UIKit
 
 class GenreTableViewController: SGBaseViewController {
 
-    
     @IBOutlet weak var genreTableView: UITableView!
     @IBOutlet weak var fetchLoadingIndicator: UIActivityIndicatorView!
     
@@ -21,7 +20,6 @@ class GenreTableViewController: SGBaseViewController {
     private lazy var genrePresenter: GenrePresenter = {
         Injection().provideGenrePresenter()
     }()
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +28,10 @@ class GenreTableViewController: SGBaseViewController {
         
         genreTableView.dataSource = self
         genreTableView.delegate = self
-        genreTableView.register(UINib(nibName: "GenreTableViewCell", bundle: nil), forCellReuseIdentifier: "genreTableViewCell")
+        genreTableView.register(
+            UINib(nibName: "GenreTableViewCell", bundle: nil),
+            forCellReuseIdentifier: "genreTableViewCell"
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,18 +70,16 @@ class GenreTableViewController: SGBaseViewController {
         }
     }
     
-    fileprivate func startDownload(genre: GenreUIModel, indexPath: IndexPath){
-        if (genre.state == .new){
-            Task {
-                do {
-                    let image = try await ImageService.shared.downloadImage(from: genre.imageBackgroundURL)
-                    genre.image = image
-                    genre.state = .downloaded
-                    genreTableView.reloadRows(at: [indexPath], with: .automatic)
-                } catch {
-                    genre.state = .failed
-                    genre.image = nil
-                }
+    fileprivate func startDownload(genre: GenreUIModel, indexPath: IndexPath) {
+        Task {
+            do {
+                let image = try await ImageService.shared.downloadImage(from: genre.imageBackgroundURL)
+                genre.image = image
+                genre.state = .downloaded
+                genreTableView.reloadRows(at: [indexPath], with: .automatic)
+            } catch {
+                genre.state = .failed
+                genre.image = nil
             }
         }
     }
@@ -101,11 +100,13 @@ extension GenreTableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "genreTableViewCell", for: indexPath) as? GenreTableViewCell {
+        if let cell = tableView.dequeueReusableCell(
+            withIdentifier: "genreTableViewCell",
+            for: indexPath
+        ) as? GenreTableViewCell {
             let genre = genreList[indexPath.row]
             cell.nameLabel.text = genre.name
             cell.genreCountLabel.text = genre.gamesCount
-            
             
             cell.imageBackground.image = genre.image
             

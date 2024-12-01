@@ -26,13 +26,13 @@ class GameDetailViewController: UIViewController {
     
     @IBOutlet weak var wishlistButton: UIButton!
     
-    var gameID: String? = nil
-    var game: GameDetailUIModel? = nil
+    var gameID: String?
+    var game: GameDetailUIModel?
     
     var isOnWishlist = false
     
     var delegate: GameDetailDelegate?
-    var isShouldRefresh : Bool = false
+    var isShouldRefresh: Bool = false
     
     private lazy var gameDetailPresenter: GameDetailPresenter = {
         Injection().provideGameDetailPresenter()
@@ -74,7 +74,6 @@ class GameDetailViewController: UIViewController {
             fetchLoadingIndicator.stopAnimating()
         }
         
-        
         do {
             let gameDetailEntity = try await gameDetailPresenter.getGameDetail(gameID: gameID ?? "0")
             game = GameDetailUIModel(from: gameDetailEntity)
@@ -96,7 +95,7 @@ class GameDetailViewController: UIViewController {
     
     private func checkIsOnWishlist() async {
         do {
-            if let id = Int(gameID ?? "0"){
+            if let id = Int(gameID ?? "0") {
                 do {
                     let result = try await gameDetailPresenter.checkIsOnWishlist(gameID: id)
                     
@@ -110,7 +109,7 @@ class GameDetailViewController: UIViewController {
         }
     }
     
-    func initView(game: GameDetailUIModel){
+    func initView(game: GameDetailUIModel) {
         detailContentView.isHidden = false
         
         gameNameLabe.text = game.name
@@ -152,7 +151,6 @@ class GameDetailViewController: UIViewController {
         Task { await getGameDetail() }
     }
     
-    
     @IBAction func wishlistButtonOnClick(_ sender: Any) {
         Task {
             if isOnWishlist {
@@ -188,7 +186,7 @@ class GameDetailViewController: UIViewController {
         } catch LocalServiceError.deleteError(let message) {
             showErrorToast(message: "Failed to remove game: \(message)")
         } catch {
-            showErrorToast(message:"An unknown error occurred.")
+            showErrorToast(message: "An unknown error occurred.")
         }
     }
     
@@ -205,22 +203,22 @@ class GameDetailViewController: UIViewController {
         } catch LocalServiceError.saveError(let message) {
             showErrorToast(message: "Failed to add game: \(message)")
         } catch {
-            showErrorToast(message:"An unknown error occurred.")
+            showErrorToast(message: "An unknown error occurred.")
         }
     }
     
-    func updateWishlistIcon(){
+    func updateWishlistIcon() {
         wishlistButton.configuration?.image = UIImage(systemName: isOnWishlist ? "heart.fill" : "heart")
     }
     
-    func showToast(message: String){
+    func showToast(message: String) {
         var toastStyle = ToastStyle()
         toastStyle.backgroundColor = UIColor.accent.withAlphaComponent(0.9)
         toastStyle.messageColor = UIColor.black
         self.view.makeToast(message, duration: 2.0, position: .bottom, style: toastStyle) { _ in }
     }
     
-    func showErrorToast(message: String){
+    func showErrorToast(message: String) {
         var toastStyle = ToastStyle()
         toastStyle.backgroundColor = UIColor.red.withAlphaComponent(0.9)
         toastStyle.messageColor = UIColor.black
@@ -231,4 +229,3 @@ class GameDetailViewController: UIViewController {
 protocol GameDetailDelegate {
     func onWishlistDataChanged(isShouldRefresh: Bool)
 }
-

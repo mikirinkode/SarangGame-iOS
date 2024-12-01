@@ -17,7 +17,6 @@ class GameUIModel {
     
     var image: UIImage?
     var state: DownloadState = .new
-    var isOnWishlist: Bool = false // TODO: REMOVE
     
     init(from entity: GameEntity) {
         self.id  = entity.id

@@ -7,7 +7,6 @@
 
 class GenreDataSource: GenreDataSourceProtocol {
     
-    
     private let networkService: NetworkService
     
     init(networkService: NetworkService) {

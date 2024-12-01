@@ -13,5 +13,4 @@ struct GameEntity {
     let released: Date
     let backgroundImage: URL
     let rating: Double
-    var isOnWishlist: Bool = false // TODO: REMOVE
 }

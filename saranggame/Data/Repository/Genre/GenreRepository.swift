@@ -9,7 +9,7 @@ class GenreRepository: GenreRepositoryProtocol {
     
     private let genreDataSource: GenreDataSourceProtocol
     
-    init(dataSource: GenreDataSourceProtocol){
+    init(dataSource: GenreDataSourceProtocol) {
         self.genreDataSource = dataSource
     }
     
@@ -17,4 +17,3 @@ class GenreRepository: GenreRepositoryProtocol {
         return try await genreDataSource.getGenreListFromNetwork()
     }
 }
-

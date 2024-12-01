@@ -8,7 +8,7 @@
 class GenrePresenter: GenrePresenterProtocol {
     private let genreUseCase: GenreUseCase
     
-    init(useCase: GenreUseCase){
+    init(useCase: GenreUseCase) {
         self.genreUseCase = useCase
     }
     

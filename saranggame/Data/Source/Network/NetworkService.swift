@@ -16,7 +16,6 @@ class NetworkService {
     let apiKey = ""
     let baseURL = "https://api.rawg.io/api"
 
-
     func getGenreList() async throws -> [GenreEntity] {
         
         var components = URLComponents(string: "\(baseURL)/genres")!

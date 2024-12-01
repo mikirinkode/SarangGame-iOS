@@ -20,11 +20,4 @@ class GameTableViewCell: UITableViewCell {
         // Initialization code
         gameImage.layer.cornerRadius = 16
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
 }

@@ -50,7 +50,14 @@ struct GameDetailResponse: Codable {
 
 extension GameDetailResponse {
     func toEntity() -> GameDetailEntity {
-        return GameDetailEntity(id: id, name: name, released: released, backgroundImage: backgroundImage, rating: rating, description: description, genres: genres.map { $0.toEntity()
-        })
+        return GameDetailEntity(
+            id: id,
+            name: name,
+            released: released,
+            backgroundImage: backgroundImage,
+            rating: rating,
+            description: description,
+            genres: genres.map { $0.toEntity()}
+        )
     }
 }

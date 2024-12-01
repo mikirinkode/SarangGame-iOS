@@ -5,12 +5,10 @@
 //  Created by MacBook on 24/11/24.
 //
 
-
 import UIKit
 
 class GameTableViewController: SGBaseViewController {
-    
-    
+        
     @IBOutlet weak var gameTableView: UITableView!
     @IBOutlet weak var fetchLoadingIndicator: UIActivityIndicatorView!
     
@@ -18,7 +16,7 @@ class GameTableViewController: SGBaseViewController {
     @IBOutlet weak var errorDescriptionLabel: UILabel!
     
     private var gameList: [GameUIModel] = []
-    var genreID: String? = nil
+    var genreID: String?
     
     lazy var gamePresenter: GamePresenter = {
         Injection().provideGamePresenter()
@@ -30,8 +28,10 @@ class GameTableViewController: SGBaseViewController {
         
         gameTableView.dataSource = self
         gameTableView.delegate = self
-        gameTableView.register(UINib(nibName: "GameTableViewCell", bundle: nil), forCellReuseIdentifier: "gameTableViewCell")
-        
+        gameTableView.register(
+            UINib(nibName: "GameTableViewCell", bundle: nil),
+            forCellReuseIdentifier: "gameTableViewCell"
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,18 +67,16 @@ class GameTableViewController: SGBaseViewController {
         }
     }
     
-    fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath){
-        if (game.state == .new){
-            Task {
-                do {
-                    let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
-                    game.state = .downloaded
-                    game.image = image
-                    self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
-                } catch {
-                    game.state = .failed
-                    game.image = nil
-                }
+    fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath) {
+        Task {
+            do {
+                let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
+                game.state = .downloaded
+                game.image = image
+                self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
+            } catch {
+                game.state = .failed
+                game.image = nil
             }
         }
     }
@@ -101,7 +99,11 @@ extension GameTableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "gameTableViewCell", for: indexPath) as? GameTableViewCell {
+        if let cell = tableView.dequeueReusableCell(
+            withIdentifier: "gameTableViewCell",
+            for: indexPath
+        ) as? GameTableViewCell {
+            
             let game = gameList[indexPath.row]
             cell.gameNameLabel.text = game.name
             cell.gameRatingLabel.text = game.rating

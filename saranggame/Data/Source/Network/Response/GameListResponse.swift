@@ -5,8 +5,6 @@
 //  Created by MacBook on 01/12/24.
 //
 
-
-
 struct GameListResponse: Codable {
     let gameList: [GameResponse]
     

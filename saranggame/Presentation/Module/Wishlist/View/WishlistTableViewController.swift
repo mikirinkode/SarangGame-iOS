@@ -28,13 +28,16 @@ class WishlistTableViewController: SGBaseViewController {
         wishlistTableView.dataSource = self
         wishlistTableView.delegate = self
         
-        wishlistTableView.register(UINib(nibName: "GameTableViewCell", bundle: nil), forCellReuseIdentifier: "gameTableViewCell")
+        wishlistTableView.register(
+            UINib(nibName: "GameTableViewCell", bundle: nil),
+            forCellReuseIdentifier: "gameTableViewCell"
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if (gameList.isEmpty) {
+        if gameList.isEmpty {
             Task {
                 await getWishlistGameList()
             }
@@ -58,23 +61,20 @@ class WishlistTableViewController: SGBaseViewController {
         }
     }
     
-    fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath){
-        if (game.state == .new){
-            Task {
-                do {
-                    let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
-                    game.state = .downloaded
-                    game.image = image
-                    self.wishlistTableView.reloadRows(at: [indexPath], with: .automatic)
-                } catch {
-                    game.state = .failed
-                    game.image = nil
-                }
+    fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath) {
+        Task {
+            do {
+                let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
+                game.state = .downloaded
+                game.image = image
+                self.wishlistTableView.reloadRows(at: [indexPath], with: .automatic)
+            } catch {
+                game.state = .failed
+                game.image = nil
             }
         }
     }
 }
-
 
 extension WishlistTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -82,7 +82,10 @@ extension WishlistTableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "gameTableViewCell", for: indexPath) as? GameTableViewCell {
+        if let cell = tableView.dequeueReusableCell(
+            withIdentifier: "gameTableViewCell",
+            for: indexPath
+        ) as? GameTableViewCell {
             let game = gameList[indexPath.row]
             cell.gameNameLabel.text = game.name
             cell.gameRatingLabel.text = game.rating
@@ -127,7 +130,7 @@ extension WishlistTableViewController: UITableViewDelegate {
 }
 
 extension WishlistTableViewController: GameDetailDelegate {
-    func onWishlistDataChanged(isShouldRefresh: Bool){
+    func onWishlistDataChanged(isShouldRefresh: Bool) {
         if isShouldRefresh {
             Task {
                 await self.getWishlistGameList()
