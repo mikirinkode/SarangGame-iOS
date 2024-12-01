@@ -11,4 +11,10 @@ protocol GameUseCase {
     func getWishlistGame() async throws -> [GameEntity]
     
     func getGameDetail(gameID: String) async throws -> GameDetailEntity
+    
+    func checkIsOnWishlist(gameID: Int) async throws -> Bool
+    
+    func addGame(gameEntity: GameEntity) async throws
+    
+    func removeGame(gameID: Int) async throws
 }

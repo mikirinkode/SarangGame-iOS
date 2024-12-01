@@ -27,13 +27,16 @@ class GameDetailViewController: UIViewController {
     @IBOutlet weak var wishlistButton: UIButton!
     
     var gameID: String? = nil
-    var game: GameDetailModel? = nil
+    var game: GameDetailUIModel? = nil
     
     var isOnWishlist = false
     
-    private lazy var gameProvider: LocalService = { return LocalService() }()
     var delegate: GameDetailDelegate?
     var isShouldRefresh : Bool = false
+    
+    private lazy var gameDetailPresenter: GameDetailPresenter = {
+        Injection().provideGameDetailPresenter()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,12 +74,16 @@ class GameDetailViewController: UIViewController {
             fetchLoadingIndicator.stopAnimating()
         }
         
-        let network = NetworkService()
+        
         do {
-            game = try await network.getGameDetail(gameID)
+            let gameDetailEntity = try await gameDetailPresenter.getGameDetail(gameID: gameID ?? "0")
+            game = GameDetailUIModel(from: gameDetailEntity)
+            
             if let game = game {
                 initView(game: game)
-                checkIsOnWishlist()
+                Task {
+                    await checkIsOnWishlist()
+                }
             }
         } catch NetworkError.invalidResponse {
             showError(message: "Invalid response from the server. Please try again.")
@@ -87,43 +94,38 @@ class GameDetailViewController: UIViewController {
         }
     }
     
-    private func checkIsOnWishlist(){
-        if let id = Int(gameID ?? "0"){
-            gameProvider.checkIsOnWishlist(id)  { result in
-                DispatchQueue.main.async {
-                    print("checkIsOnWishlist result: \(result)")
+    private func checkIsOnWishlist() async {
+        do {
+            if let id = Int(gameID ?? "0"){
+                do {
+                    let result = try await gameDetailPresenter.checkIsOnWishlist(gameID: id)
+                    
                     self.wishlistButton.isHidden = false
                     self.isOnWishlist = result
                     self.updateWishlistIcon()
+                } catch {
+                    showError(message: "Unexpected error.")
                 }
             }
         }
     }
     
-    func initView(game: GameDetailModel){
+    func initView(game: GameDetailUIModel){
         detailContentView.isHidden = false
         
         gameNameLabe.text = game.name
-        gameRatingLabel.text = "\(game.rating)/5"
-
-        // TODO
-//        gameGenresLabel.text = game.genres.map { $0.name }.joined(separator: ", ")
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMM yyyy"
-        gameReleasedDateLabel.text = dateFormatter.string(from: game.released)
-        
-        let desc = stripHTML(from: game.description)
-        gameDescriptionLabel.text = desc
+        gameRatingLabel.text = game.rating
+        gameGenresLabel.text = game.genres
+        gameReleasedDateLabel.text = game.released
+        gameDescriptionLabel.text = game.description
         
         if game.state == .new {
             imageLoadingIndicator.isHidden = false
             imageLoadingIndicator.startAnimating()
             Task {
                 do {
-                    let imageDownloader = ImageDownloader()
                     
-                    let image = try await imageDownloader.downloadImage(url: game.backgroundImage)
+                    let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
                     game.state = .downloaded
                     game.image = image
                     
@@ -141,11 +143,6 @@ class GameDetailViewController: UIViewController {
         
     }
     
-    fileprivate func stripHTML(from html: String) -> String {
-        let regex = try! NSRegularExpression(pattern: "<[^>]+>", options: .caseInsensitive)
-        return regex.stringByReplacingMatches(in: html, options: [], range: NSRange(location: 0, length: html.count), withTemplate: "")
-    }
-    
     func showError(message: String) {
         errorDescriptionLabel.text = message
         errorView.isHidden = false
@@ -157,56 +154,58 @@ class GameDetailViewController: UIViewController {
     
     
     @IBAction func wishlistButtonOnClick(_ sender: Any) {
-        if (isOnWishlist){
-            let alert = UIAlertController(title: "Remove Game?", message: "Are you sure want to remove this game from your wishlist?", preferredStyle: .alert)
-            
-            alert.addAction(UIAlertAction(title: "Remove", style: .default){ _ in
-                self.gameProvider.removeGame(self.game?.id ?? 0) { result in
-                    
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success():
-                            self.isOnWishlist = false
-                            self.updateWishlistIcon()
-                            self.showToast(message: "Game removed from your wishlist")
-                            self.isShouldRefresh = true
-                            
-                        case .failure(let error):
-                            switch error {
-                            case .deleteError(let message):
-                                self.showErrorToast(message: "Failed to remove game: \(message)")
-                            default:
-                                self.showErrorToast(message:"An unknown error occurred.")
-                            }
-                        }
-                    }
-                }
-            })
-            
-            alert.addAction(UIAlertAction(title: "Cancel", style: .default) { _ in })
-            
-            self.present(alert, animated: true)
-        } else {
-            gameProvider.addGame(game?.id ?? 0, game?.name ?? "", game?.backgroundImage ?? URL(string: "")!, game?.released ?? Date.now, game?.rating ?? 0.0) { result in
+        Task {
+            if isOnWishlist {
+                let alert = UIAlertController(
+                    title: "Remove Game?",
+                    message: "Are you sure want to remove this game from your wishlist?",
+                    preferredStyle: .alert
+                )
                 
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success():
-                        self.isOnWishlist = true
-                        self.updateWishlistIcon()
-                        self.showToast(message: "Game added to your wishlist")
-                        self.isShouldRefresh = false
-                        
-                    case .failure(let error):
-                        switch error {
-                        case .saveError(let message):
-                            self.showErrorToast(message: "Failed to add game: \(message)")
-                        default:
-                            self.showErrorToast(message:"An unknown error occurred.")
-                        }
+                alert.addAction(UIAlertAction(title: "Remove", style: .default) { _ in
+                    Task {
+                        await self.removeGame()
                     }
-                }
+                })
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                self.present(alert, animated: true)
+            } else {
+                await addGame()
             }
+        }
+    }
+    
+    func removeGame() async {
+        do {
+            try await gameDetailPresenter.removeGame(gameID: self.game?.id ?? 0)
+            DispatchQueue.main.async {
+                self.isOnWishlist = false
+                self.updateWishlistIcon()
+                self.showToast(message: "Game removed from your wishlist")
+                self.isShouldRefresh = true
+            }
+        } catch LocalServiceError.deleteError(let message) {
+            showErrorToast(message: "Failed to remove game: \(message)")
+        } catch {
+            showErrorToast(message:"An unknown error occurred.")
+        }
+    }
+    
+    func addGame() async {
+        do {
+            guard let gameEntity = game?.toGameEntity() else { throw LocalServiceError.saveError("Invalid Data") }
+            try await gameDetailPresenter.addGame(gameEntity: gameEntity)
+            DispatchQueue.main.async {
+                self.isOnWishlist = true
+                self.updateWishlistIcon()
+                self.showToast(message: "Game added to your wishlist")
+                self.isShouldRefresh = false
+            }
+        } catch LocalServiceError.saveError(let message) {
+            showErrorToast(message: "Failed to add game: \(message)")
+        } catch {
+            showErrorToast(message:"An unknown error occurred.")
         }
     }
     

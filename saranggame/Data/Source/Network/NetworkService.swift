@@ -41,7 +41,7 @@ class NetworkService {
         }
     }
     
-    func getGameList(_ genreID: String?) async throws -> [GameModel] {
+    func getGameList(_ genreID: String?) async throws -> [GameEntity] {
         var components = URLComponents(string: "\(baseURL)/games")!
         var queryItems = [
             URLQueryItem(name: "key", value: apiKey)
@@ -64,18 +64,16 @@ class NetworkService {
         do {
             let decoder = JSONDecoder()
             let result = try decoder.decode(GameListResponse.self, from: data)
-            return gameListMapper(input: result.gameList)
+            return result.toEntities()
         } catch {
             throw NetworkError.requestFailed("We encountered an unexpected issue. Please try again.")
         }
     }
     
-    func getGameDetail(_ gameID: String?) async throws -> GameDetailModel {
+    func getGameDetail(_ gameID: String) async throws -> GameDetailEntity {
         var components = URLComponents(string: "\(baseURL)/games/")!
         
-        if let gameID = gameID, !gameID.isEmpty {
-            components.path.append("\(gameID)")
-        }
+        components.path.append("\(gameID)")
         
         components.queryItems = [URLQueryItem(name: "key", value: apiKey)]
         
@@ -90,39 +88,9 @@ class NetworkService {
         do {
             let decoder = JSONDecoder()
             let result = try decoder.decode(GameDetailResponse.self, from: data)
-            return GameDetailModel(from: result)
+            return result.toEntity()
         } catch {
             throw NetworkError.requestFailed("We encountered an unexpected issue. Please try again.")
         }
-    }
-}
-
-extension NetworkService {
-    fileprivate func gameListMapper(
-        input gameListResponse: [GameResponse]
-    ) -> [GameModel] {
-        return gameListResponse.map { result in
-            return GameModel(
-                id: result.id,
-                name: result.name,
-                backgroundImage: result.backgroundImage,
-                released: result.released,
-                rating: result.rating
-            )
-        }
-    }
-    
-    fileprivate func gameMapper(
-        input gameResponse: GameDetailResponse
-    ) -> GameDetailModel {
-        return GameDetailModel(
-            id: gameResponse.id,
-            name: gameResponse.name,
-            backgroundImage: gameResponse.backgroundImage,
-            released: gameResponse.released,
-            rating: gameResponse.rating,
-            description: gameResponse.description
-//            genres: gameResponse.genres.map { $0.toModel()}
-        )
     }
 }

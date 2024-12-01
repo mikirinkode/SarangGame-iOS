@@ -58,7 +58,7 @@
             <connections>
                 <outlet property="genreCountLabel" destination="jVQ-En-Ome" id="et4-mB-4Tz"/>
                 <outlet property="imageBackground" destination="z2K-VW-IgH" id="3ig-wZ-CYd"/>
-                <outlet property="indicatorLoading" destination="52l-15-TvW" id="vJm-DO-DSZ"/>
+                <outlet property="imageLoadIndicator" destination="52l-15-TvW" id="vJm-DO-DSZ"/>
                 <outlet property="nameLabel" destination="qnZ-2t-p4d" id="ByD-2Z-XXE"/>
             </connections>
             <point key="canvasLocation" x="208" y="40"/>

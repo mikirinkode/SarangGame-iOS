@@ -7,14 +7,14 @@
 
 class GenreRepository: GenreRepositoryProtocol {
     
-    private let gameDataSource: GenreDataSourceProtocol
+    private let genreDataSource: GenreDataSourceProtocol
     
     init(dataSource: GenreDataSourceProtocol){
-        self.gameDataSource = dataSource
+        self.genreDataSource = dataSource
     }
     
     func getGenreList() async throws -> [GenreEntity] {
-        return try await gameDataSource.getGenreListFromNetwork()
+        return try await genreDataSource.getGenreListFromNetwork()
     }
 }
 

@@ -7,7 +7,7 @@
 
 import CoreData
 
-enum GameProviderError: Error {
+enum LocalServiceError: Error {
     case fetchError(String)
     case saveError(String)
     case deleteError(String)
@@ -38,113 +38,89 @@ class LocalService {
         return taskContext
     }
     
-    func getWishlistGame(completion: @escaping(_ gameList: [GameModel]) -> Void){
+    func getWishlistGame() async throws -> [GameEntity] {
         let taskContext = newTaskContext()
         
-        taskContext.perform {
+        return try await taskContext.perform {
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Game")
-            do {
-                let results = try taskContext.fetch(fetchRequest)
-                var gameList: [GameModel] = []
-                for result in results {
-                    let game = GameModel(
-                        id: Int(result.value(forKeyPath: "id") as? Int32 ?? 0),
-                        name: result.value(forKeyPath: "name") as? String ?? "",
-                        backgroundImage: result.value(forKeyPath: "backgroundImage") as? URL ?? URL(string:"")!,
-                        released: result.value(forKeyPath: "released") as? Date ?? Date.now,
-                        rating: result.value(forKeyPath: "rating") as? Double ?? 0.0
-                    )
-                    gameList.append(game)
-                    print("game id: \(game.id)")
-                    print("game name: \(game.name)")
-                    print("game backgroundImage: \(game.backgroundImage)")
-                    print("game released: \(game.released)")
-                    print("game rating: \(game.rating)")
-                }
-                completion(gameList)
-            } catch let error as NSError {
-                print("Could not fetch. \(error), \(error.userInfo)")
+            let results = try taskContext.fetch(fetchRequest)
+            return results.map { result in
+                GameEntity(
+                    id: Int(result.value(forKeyPath: "id") as? Int32 ?? 0),
+                    name: result.value(forKeyPath: "name") as? String ?? "",
+                    released: result.value(forKeyPath: "released") as? Date ?? Date.now,
+                    backgroundImage: result.value(forKeyPath: "backgroundImage") as? URL ?? URL(string:"")!,
+                    rating: result.value(forKeyPath: "rating") as? Double ?? 0.0
+                )
             }
         }
     }
     
-    func checkIsOnWishlist(_ id: Int, completion: @escaping(_ isOnWishlist: Bool) -> Void){
+    func checkIsOnWishlist(_ id: Int) async throws -> Bool {
         let taskContext = newTaskContext()
         
-        taskContext.perform {
+        return try await taskContext.perform {
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Game")
             fetchRequest.fetchLimit = 1
             fetchRequest.predicate = NSPredicate(format: "id == \(id)")
+            let result = try taskContext.fetch(fetchRequest).first
+            return result != nil
+        }
+    }
+    
+    func addGame(_ game: GameEntity) async throws {
+        let taskContext = newTaskContext()
+        
+        print("Adding game")
+        print("Game id: \(game.id)")
+        print("Game name: \(game.name)")
+        print("Game backgroundImage: \(game.backgroundImage)")
+        print("Game released: \(game.released)")
+        print("Game rating: \(game.rating)")
+        
+        try await taskContext.perform {
+            guard let entity = NSEntityDescription.entity(forEntityName: "Game", in: taskContext) else {
+                throw LocalServiceError.saveError("Entity not found for Game.")
+            }
+            
+            let managedGame = NSManagedObject(entity: entity, insertInto: taskContext)
+            managedGame.setValue(game.id, forKey: "id")
+            managedGame.setValue(game.name, forKey: "name")
+            managedGame.setValue(game.backgroundImage, forKey: "backgroundImage")
+            managedGame.setValue(game.released, forKey: "released")
+            managedGame.setValue(game.rating, forKey: "rating")
+            managedGame.setValue(true, forKey: "isOnWishlist")
             
             do {
-                let result = try taskContext.fetch(fetchRequest).first
-                
-                completion(result != nil)
-            } catch let error as NSError {
-                print("Could not fetch: \(error), \(error.userInfo)")// TODO
+                try taskContext.save()
+            } catch {
+                throw LocalServiceError.saveError("Could not save game: \(error.localizedDescription)")
             }
         }
     }
     
-    func addGame(
-        _ id: Int,
-        _ name: String,
-        _ backgroundImage: URL,
-        _ released: Date,
-        _ rating: Double,
-        completion: @escaping(Result<Void, GameProviderError>) -> Void
-    ) {
-        let taskContext = newTaskContext()
-        print("adding game")
-        print("game id: \(id)")
-        print("game name: \(name)")
-        print("game backgroundImage: \(backgroundImage)")
-        print("game released: \(released)")
-        print("game rating: \(rating)")
-        
-        taskContext.performAndWait {
-            if let entity = NSEntityDescription.entity(forEntityName: "Game", in: taskContext){
-                let game = NSManagedObject(entity: entity, insertInto: taskContext)
-                game.setValue(id, forKey: "id")
-                game.setValue(name, forKey: "name")
-                game.setValue(backgroundImage, forKey: "backgroundImage")
-                game.setValue(released, forKey: "released")
-                game.setValue(rating, forKey: "rating")
-                game.setValue(true, forKey: "isOnWishlist")
-                
-                do {
-                    try taskContext.save()
-                    completion(.success(()))
-                } catch let error as NSError {
-                    completion(.failure(.saveError("Could not save game: \(error.localizedDescription)")))
-                }
-            } else {
-                completion(.failure(.saveError("Entity not found for Game.")))
-            }
-        }
-    }
-    
-    func removeGame(_ id: Int, completion: @escaping(Result<Void, GameProviderError>) -> Void){
+    func removeGame(_ id: Int) async throws {
         let taskContext = newTaskContext()
         
-        taskContext.perform {
+        try await taskContext.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Game")
             fetchRequest.fetchLimit = 1
-            fetchRequest.predicate = NSPredicate(format: "id == \(id)")
+            fetchRequest.predicate = NSPredicate(format: "id == %d", id)
             
             let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             batchDeleteRequest.resultType = .resultTypeCount
             
             do {
-                  let batchDeleteResult = try taskContext.execute(batchDeleteRequest) as? NSBatchDeleteResult
-                  if batchDeleteResult?.result != nil {
-                      completion(.success(()))
-                  } else {
-                      completion(.failure(.deleteError("No game found to delete.")))
-                  }
-              } catch let error as NSError {
-                  completion(.failure(.deleteError("Could not delete game: \(error.localizedDescription)")))
-              }
+                let batchDeleteResult = try taskContext.execute(batchDeleteRequest) as? NSBatchDeleteResult
+                if let deletedCount = batchDeleteResult?.result as? Int, deletedCount > 0 {
+                    print("Deleted \(deletedCount) game(s) with id: \(id)")
+                } else {
+                    throw LocalServiceError.deleteError("No game found to delete with id: \(id).")
+                }
+            } catch {
+                throw LocalServiceError.deleteError("Could not delete game: \(error.localizedDescription)")
+            }
         }
     }
+
 }

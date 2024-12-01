@@ -11,9 +11,15 @@ class WishlistTableViewController: SGBaseViewController {
     
     @IBOutlet weak var wishlistTableView: UITableView!
     @IBOutlet weak var emptyView: UIStackView!
+    @IBOutlet weak var errorView: UIStackView!
+    @IBOutlet weak var errorDescLabel: UILabel!
     
-    private var gameList: [GameModel] = []
+    private var gameList: [GameUIModel] = []
     private lazy var gameProvider: LocalService = { return LocalService() }()
+    
+    private lazy var wishlistPresenter: WishlistPresenter = {
+        Injection().provideWishlistPresenter()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,21 +35,43 @@ class WishlistTableViewController: SGBaseViewController {
         super.viewWillAppear(animated)
         
         if (gameList.isEmpty) {
-            getWishlistGameList()
+            Task {
+                await getWishlistGameList()
+            }
         }
         
     }
     
-    func getWishlistGameList() {
-        self.gameProvider.getWishlistGame(completion: { result in
+    func getWishlistGameList() async {
+        do {
+            errorView.isHidden = true
+            let gameEntities = try await wishlistPresenter.getWishlistGame()
+            gameList = gameEntities.map { GameUIModel(from: $0) }
             
-            DispatchQueue.main.async{
-                self.gameList = result
-                self.wishlistTableView.reloadData()
-                print("getWishlistGameList completion: \(result)")
-                self.emptyView.isHidden = !result.isEmpty
+            wishlistTableView.reloadData()
+            emptyView.isHidden = !gameList.isEmpty
+        } catch LocalServiceError.fetchError(let message) {
+            errorView.isHidden = false
+            errorDescLabel.text = message
+        } catch {
+            errorView.isHidden = false
+        }
+    }
+    
+    fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath){
+        if (game.state == .new){
+            Task {
+                do {
+                    let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
+                    game.state = .downloaded
+                    game.image = image
+                    self.wishlistTableView.reloadRows(at: [indexPath], with: .automatic)
+                } catch {
+                    game.state = .failed
+                    game.image = nil
+                }
             }
-        })
+        }
     }
 }
 
@@ -57,13 +85,9 @@ extension WishlistTableViewController: UITableViewDataSource {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "gameTableViewCell", for: indexPath) as? GameTableViewCell {
             let game = gameList[indexPath.row]
             cell.gameNameLabel.text = game.name
-            cell.gameRatingLabel.text = "\(game.rating)"
+            cell.gameRatingLabel.text = game.rating
             
-            
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd MMM yyyy"
-            
-            cell.gameReleasedDateLabel.text = dateFormatter.string(from: game.released)
+            cell.gameReleasedDateLabel.text = game.released
             
             cell.gameImage.image = game.image
             
@@ -80,23 +104,6 @@ extension WishlistTableViewController: UITableViewDataSource {
             
         } else {
             return UITableViewCell()
-        }
-    }
-    
-    fileprivate func startDownload(game: GameModel, indexPath: IndexPath){
-        let imageDownloader = ImageDownloader()
-        if (game.state == .new){
-            Task {
-                do {
-                    let image = try await imageDownloader.downloadImage(url: game.backgroundImage)
-                    game.state = .downloaded
-                    game.image = image
-                    self.wishlistTableView.reloadRows(at: [indexPath], with: .automatic)
-                } catch {
-                    game.state = .failed
-                    game.image = nil
-                }
-            }
         }
     }
 }
@@ -122,7 +129,9 @@ extension WishlistTableViewController: UITableViewDelegate {
 extension WishlistTableViewController: GameDetailDelegate {
     func onWishlistDataChanged(isShouldRefresh: Bool){
         if isShouldRefresh {
-            self.getWishlistGameList()
+            Task {
+                await self.getWishlistGameList()
+            }
         }
     }
 }

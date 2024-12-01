@@ -13,27 +13,68 @@ final class Injection: NSObject {
         return NetworkService()
     }
     
-    private func provideDataSource() -> GameDataSourceProtocol {
-        let networkService = provideNetworkService()
-        
-        return GameDataSource(networkService: networkService)
+    private func provideLocalService() -> LocalService {
+        return LocalService()
     }
     
-    private func provideRepository() -> GameRepositoryProtocol {
-        let gameDataSource = provideDataSource()
+    private func provideGenreDataSource() -> GenreDataSourceProtocol {
+        let networkService = provideNetworkService()
+        
+        return GenreDataSource(networkService: networkService)
+    }
+    
+    private func provideGameDataSource() -> GameDataSourceProtocol {
+        let networkService = provideNetworkService()
+        let localService = provideLocalService()
+        
+        return GameDataSource(networkService: networkService, localService: localService)
+    }
+    
+    private func provideGenreRepository() -> GenreRepositoryProtocol {
+        let genreDataSource = provideGenreDataSource()
+        
+        return GenreRepository(dataSource: genreDataSource)
+    }
+    
+    private func provideGameRepository() -> GameRepositoryProtocol {
+        let gameDataSource = provideGameDataSource()
         
         return GameRepository(dataSource: gameDataSource)
     }
     
-    func provideUseCase() -> GameUseCase {
-        let gameRepository = provideRepository()
+    private func provideGenreUseCase() -> GenreUseCase {
+        let genreRepository = provideGenreRepository()
+        
+        return GenreUseCaseInteractor(repository: genreRepository)
+    }
+    
+    private func provideGameUseCase() -> GameUseCase {
+        let gameRepository = provideGameRepository()
         
         return GameUseCaseInteractor(repository: gameRepository)
     }
     
-    func provideGamePresenter() -> GamePresenter {
-        let useCase = provideUseCase()
+    func provideGenrePresenter() -> GenrePresenter {
+        let useCase = provideGenreUseCase()
         
-        return GamePresenter(useCase: useCase)
+        return GenrePresenter(useCase: useCase)
+    }
+    
+    func provideGamePresenter() -> GamePresenter {
+        let useCase = provideGameUseCase()
+        
+        return GamePresenter(gameUseCase: useCase)
+    }
+    
+    func provideGameDetailPresenter() -> GameDetailPresenter {
+        let useCase = provideGameUseCase()
+        
+        return GameDetailPresenter(useCase: useCase)
+    }
+    
+    func provideWishlistPresenter() -> WishlistPresenter {
+        let useCase = provideGameUseCase()
+        
+        return WishlistPresenter(useCase: useCase)
     }
 }

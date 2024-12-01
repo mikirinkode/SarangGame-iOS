@@ -18,8 +18,8 @@ class GenreTableViewController: SGBaseViewController {
     
     private var genreList: [GenreUIModel] = []
 
-    lazy var gamePresenter: GamePresenter = {
-        Injection().provideGamePresenter()
+    private lazy var genrePresenter: GenrePresenter = {
+        Injection().provideGenrePresenter()
     }()
 
     
@@ -55,11 +55,9 @@ class GenreTableViewController: SGBaseViewController {
             fetchLoadingIndicator.stopAnimating()
         }
         
-        
-//        let network = NetworkService()
         do {
-            let genreEntities = try await gamePresenter.getGenreList()
-            genreList = genreEntities.map { GenreUIModel(from: $0)}
+            let genreEntities = try await genrePresenter.getGenreList()
+            genreList = genreEntities.map { GenreUIModel(from: $0) }
             
             genreTableView.reloadData()
         } catch NetworkError.invalidResponse {
@@ -72,7 +70,6 @@ class GenreTableViewController: SGBaseViewController {
     }
     
     fileprivate func startDownload(genre: GenreUIModel, indexPath: IndexPath){
-//        let imageDownloader = ImageDownloader()
         if (genre.state == .new){
             Task {
                 do {

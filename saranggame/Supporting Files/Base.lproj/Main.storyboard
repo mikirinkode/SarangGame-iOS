@@ -76,7 +76,7 @@
                     <connections>
                         <outlet property="errorDescriptionLabel" destination="Jt2-FN-9F6" id="qS8-Wf-orb"/>
                         <outlet property="errorView" destination="feH-Cr-2Nq" id="GU0-gO-3O5"/>
-                        <outlet property="fetchIndicatorLoading" destination="Usc-Fi-oNQ" id="IFi-nY-wum"/>
+                        <outlet property="fetchLoadingIndicator" destination="Usc-Fi-oNQ" id="IFi-nY-wum"/>
                         <outlet property="genreTableView" destination="Fju-AE-JGj" id="BSf-uy-csf"/>
                         <segue destination="s4u-5c-ohf" kind="show" identifier="moveToGameList" id="oSC-qg-kVi"/>
                     </connections>
@@ -360,15 +360,49 @@
                                     </label>
                                 </subviews>
                             </stackView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="sBh-XC-fdg">
+                                <rect key="frame" x="24" y="371.33333333333331" width="345" height="109.66666666666669"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="xIY-50-zr2">
+                                        <rect key="frame" x="0.0" y="0.0" width="345" height="51.333333333333336"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An Error Occured" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slK-Um-lVK">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="24"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Failed to fetch data from your local Wishlist." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-pl-69i">
+                                                <rect key="frame" x="0.0" y="32" width="345" height="19.333333333333329"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zQ5-qm-kDL">
+                                        <rect key="frame" x="0.0" y="75.333333333333371" width="345" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Try Again"/>
+                                        <connections>
+                                            <action selector="tryAgainButtonOnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DDl-G4-QI6"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rs0-Dh-DXG"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="sBh-XC-fdg" firstAttribute="centerX" secondItem="jez-qM-0Sl" secondAttribute="centerX" id="2Nn-rb-OU2"/>
                             <constraint firstItem="rs0-Dh-DXG" firstAttribute="trailing" secondItem="KUc-Z9-ZQ2" secondAttribute="trailing" constant="24" id="I1F-zK-YdW"/>
                             <constraint firstItem="XHP-4x-bza" firstAttribute="top" secondItem="rs0-Dh-DXG" secondAttribute="top" id="Lrm-ki-2hV"/>
                             <constraint firstItem="KUc-Z9-ZQ2" firstAttribute="centerX" secondItem="jez-qM-0Sl" secondAttribute="centerX" id="P3B-Dm-X9y"/>
                             <constraint firstItem="rs0-Dh-DXG" firstAttribute="bottom" secondItem="XHP-4x-bza" secondAttribute="bottom" id="UXf-jw-xxc"/>
+                            <constraint firstAttribute="trailing" secondItem="sBh-XC-fdg" secondAttribute="trailing" constant="24" id="X5A-mE-bwT"/>
+                            <constraint firstItem="sBh-XC-fdg" firstAttribute="centerY" secondItem="jez-qM-0Sl" secondAttribute="centerY" id="dAr-Bf-opp"/>
                             <constraint firstItem="XHP-4x-bza" firstAttribute="leading" secondItem="rs0-Dh-DXG" secondAttribute="leading" id="dpY-65-53K"/>
+                            <constraint firstItem="sBh-XC-fdg" firstAttribute="leading" secondItem="jez-qM-0Sl" secondAttribute="leading" constant="24" id="mub-dX-XZ7"/>
                             <constraint firstItem="KUc-Z9-ZQ2" firstAttribute="leading" secondItem="rs0-Dh-DXG" secondAttribute="leading" constant="24" id="sLo-kA-lQ9"/>
                             <constraint firstItem="KUc-Z9-ZQ2" firstAttribute="centerY" secondItem="jez-qM-0Sl" secondAttribute="centerY" id="vNX-1T-eqG"/>
                             <constraint firstItem="rs0-Dh-DXG" firstAttribute="trailing" secondItem="XHP-4x-bza" secondAttribute="trailing" id="zJH-nu-SlT"/>
@@ -377,6 +411,8 @@
                     <tabBarItem key="tabBarItem" title="Wishlist" image="heart" catalog="system" id="tWv-9c-89i"/>
                     <connections>
                         <outlet property="emptyView" destination="KUc-Z9-ZQ2" id="gqp-Ke-ugK"/>
+                        <outlet property="errorDescLabel" destination="mdU-pl-69i" id="m6V-b4-RkJ"/>
+                        <outlet property="errorView" destination="sBh-XC-fdg" id="l7j-IB-igi"/>
                         <outlet property="wishlistTableView" destination="XHP-4x-bza" id="YM0-f6-z2G"/>
                         <segue destination="PZo-Rq-jrT" kind="show" identifier="moveToGameDetail" id="B33-tM-Dbi"/>
                     </connections>
@@ -469,7 +505,7 @@
                     <connections>
                         <outlet property="errorDescriptionLabel" destination="dwS-rp-g7q" id="QDl-KO-QL5"/>
                         <outlet property="errorView" destination="fRn-Sz-abW" id="WQL-z1-YgP"/>
-                        <outlet property="fetchIndicatorLoading" destination="mRC-Db-ypi" id="ajO-ep-VNG"/>
+                        <outlet property="fetchLoadingIndicator" destination="mRC-Db-ypi" id="ajO-ep-VNG"/>
                         <outlet property="gameTableView" destination="78j-ni-OTd" id="wNi-7O-XLv"/>
                         <segue destination="PZo-Rq-jrT" kind="show" identifier="moveToGameDetail" id="mzg-8C-05V"/>
                     </connections>
@@ -681,13 +717,13 @@
                         <outlet property="detailContentView" destination="DK4-ns-VjF" id="dyk-VI-soA"/>
                         <outlet property="errorDescriptionLabel" destination="RwK-n3-BNM" id="xYY-cT-0ji"/>
                         <outlet property="errorView" destination="QDW-Ue-j2n" id="cJn-69-aOc"/>
-                        <outlet property="fetchIndicatorLoading" destination="gfa-CN-hW1" id="pco-0U-j6E"/>
+                        <outlet property="fetchLoadingIndicator" destination="gfa-CN-hW1" id="pco-0U-j6E"/>
                         <outlet property="gameDescriptionLabel" destination="CVN-yp-o9M" id="kSZ-Q6-Jkx"/>
                         <outlet property="gameGenresLabel" destination="ixH-aZ-Jib" id="KWj-vX-D14"/>
                         <outlet property="gameNameLabe" destination="ko7-Ty-9Mb" id="6xP-Ru-bWI"/>
                         <outlet property="gameRatingLabel" destination="RMm-KA-FiR" id="ljf-8j-yuz"/>
                         <outlet property="gameReleasedDateLabel" destination="p0e-tA-xjG" id="OJS-Sg-iyG"/>
-                        <outlet property="imageIndicatorLoading" destination="Kpm-s1-9Hw" id="jAQ-hj-gc8"/>
+                        <outlet property="imageLoadingIndicator" destination="Kpm-s1-9Hw" id="jAQ-hj-gc8"/>
                         <outlet property="wishlistButton" destination="adD-3T-ozc" id="M1m-v3-Ok7"/>
                     </connections>
                 </viewController>

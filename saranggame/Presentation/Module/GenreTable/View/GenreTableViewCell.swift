@@ -12,7 +12,7 @@ class GenreTableViewCell: UITableViewCell {
     @IBOutlet weak var imageBackground: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var genreCountLabel: UILabel!
-    @IBOutlet weak var indicatorLoading: UIActivityIndicatorView!
+    @IBOutlet weak var imageLoadIndicator: UIActivityIndicatorView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

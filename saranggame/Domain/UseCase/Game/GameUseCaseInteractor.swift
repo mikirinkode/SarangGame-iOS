@@ -23,4 +23,16 @@ class GameUseCaseInteractor: GameUseCase {
     func getWishlistGame() async throws -> [GameEntity] {
         return try await gameRepository.getWishlistGame()
     }
+    
+    func checkIsOnWishlist(gameID: Int) async throws -> Bool {
+        return try await gameRepository.checkIsOnWishlist(gameID: gameID)
+    }
+    
+    func addGame(gameEntity: GameEntity) async throws {
+        return try await gameRepository.addGame(gameEntity: gameEntity)
+    }
+    
+    func removeGame(gameID: Int) async throws {
+        return try await gameRepository.removeGame(gameID: gameID)
+    }
 }

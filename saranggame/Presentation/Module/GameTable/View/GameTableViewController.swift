@@ -17,8 +17,12 @@ class GameTableViewController: SGBaseViewController {
     @IBOutlet weak var errorView: UIStackView!
     @IBOutlet weak var errorDescriptionLabel: UILabel!
     
-    private var gameList: [GameModel] = []
+    private var gameList: [GameUIModel] = []
     var genreID: String? = nil
+    
+    lazy var gamePresenter: GamePresenter = {
+        Injection().provideGamePresenter()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +38,9 @@ class GameTableViewController: SGBaseViewController {
         super.viewWillAppear(animated)
         
         if gameList.isEmpty {
-            Task { await getGameList() }
+            Task {
+                await getGameList()
+            }
         }
     }
     
@@ -48,9 +54,9 @@ class GameTableViewController: SGBaseViewController {
             fetchLoadingIndicator.stopAnimating()
         }
         
-        let network = NetworkService()
         do {
-            gameList = try await network.getGameList(genreID)
+            let gameEntities = try await gamePresenter.getGameList(genreID: genreID ?? "0")
+            gameList = gameEntities.map { GameUIModel(from: $0) }
             gameTableView.reloadData()
         } catch NetworkError.invalidResponse {
             showError(message: "Invalid response from the server. Please try again.")
@@ -58,6 +64,22 @@ class GameTableViewController: SGBaseViewController {
             showError(message: message)
         } catch {
             showError(message: "Unexpected error: \(error.localizedDescription)")
+        }
+    }
+    
+    fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath){
+        if (game.state == .new){
+            Task {
+                do {
+                    let image = try await ImageService.shared.downloadImage(from: game.backgroundImage)
+                    game.state = .downloaded
+                    game.image = image
+                    self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
+                } catch {
+                    game.state = .failed
+                    game.image = nil
+                }
+            }
         }
     }
     
@@ -82,13 +104,8 @@ extension GameTableViewController: UITableViewDataSource {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "gameTableViewCell", for: indexPath) as? GameTableViewCell {
             let game = gameList[indexPath.row]
             cell.gameNameLabel.text = game.name
-            cell.gameRatingLabel.text = "\(game.rating)"
-            
-            
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd MMM yyyy"
-            
-            cell.gameReleasedDateLabel.text = dateFormatter.string(from: game.released)
+            cell.gameRatingLabel.text = game.rating
+            cell.gameReleasedDateLabel.text = game.released
             
             cell.gameImage.image = game.image
             
@@ -105,23 +122,6 @@ extension GameTableViewController: UITableViewDataSource {
             
         } else {
             return UITableViewCell()
-        }
-    }
-    
-    fileprivate func startDownload(game: GameModel, indexPath: IndexPath){
-        let imageDownloader = ImageDownloader()
-        if (game.state == .new){
-            Task {
-                do {
-                    let image = try await imageDownloader.downloadImage(url: game.backgroundImage)
-                    game.state = .downloaded
-                    game.image = image
-                    self.gameTableView.reloadRows(at: [indexPath], with: .automatic)
-                } catch {
-                    game.state = .failed
-                    game.image = nil
-                }
-            }
         }
     }
 }

@@ -13,6 +13,6 @@ class WishlistPresenter: WishlistPresenterProtocol {
     }
     
     func getWishlistGame() async throws -> [GameEntity] {
-        return useCase.getWishlistGame()
+        return try await useCase.getWishlistGame()
     }
 }

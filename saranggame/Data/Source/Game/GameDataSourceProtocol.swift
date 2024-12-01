@@ -14,9 +14,9 @@ protocol GameDataSourceProtocol {
     
     func getWishlistGameFromLocal() async throws -> [GameEntity]
     
-//    func checkIsOnLocalWishlist() async throws -> Bool
-//    
-//    func addGame(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double) async throws -> Result<Void, LocalServiceError>
-//    
-//    func removeGame(id: Int) async throws -> Result<Void, LocalServiceError>
+    func checkIsOnLocalWishlist(gameID: Int) async throws -> Bool
+    
+    func addGameToLocalWishlist(gameEntity: GameEntity) async throws
+    
+    func removeGameFromLocalWishlist(gameID: Int) async throws
 }

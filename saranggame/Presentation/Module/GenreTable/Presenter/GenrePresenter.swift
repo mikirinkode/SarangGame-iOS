@@ -6,13 +6,13 @@
 //
 
 class GenrePresenter: GenrePresenterProtocol {
-    private let gameUseCase: GenreUseCase
+    private let genreUseCase: GenreUseCase
     
     init(useCase: GenreUseCase){
-        self.gameUseCase = useCase
+        self.genreUseCase = useCase
     }
     
     func getGenreList() async throws -> [GenreEntity] {
-        return try await gameUseCase.getGenreList()
+        return try await genreUseCase.getGenreList()
     }
 }
