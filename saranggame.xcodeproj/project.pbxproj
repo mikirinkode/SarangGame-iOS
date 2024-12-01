@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FAB23F1F2CFC5F98009C1400 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = FAB23F1E2CFC5F98009C1400 /* .swiftlint.yml */; };
+		FAB23F222CFC6475009C1400 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FAB23F212CFC6475009C1400 /* Alamofire */; };
 		FAEE60E82CF6DCFA00EA32A6 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = FAEE60E72CF6DCFA00EA32A6 /* Toast */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAEE60E82CF6DCFA00EA32A6 /* Toast in Frameworks */,
+				FAB23F222CFC6475009C1400 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +137,7 @@
 			name = saranggame;
 			packageProductDependencies = (
 				FAEE60E72CF6DCFA00EA32A6 /* Toast */,
+				FAB23F212CFC6475009C1400 /* Alamofire */,
 			);
 			productName = saranggame;
 			productReference = FA66DFB32CF1C47D00EF241E /* saranggame.app */;
@@ -220,6 +223,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				FAEE60A32CF6D87800EA32A6 /* XCRemoteSwiftPackageReference "Toast-Swift" */,
+				FAB23F202CFC6475009C1400 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FA66DFB42CF1C47D00EF241E /* Products */;
@@ -601,6 +605,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		FAB23F202CFC6475009C1400 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 		FAEE60A32CF6D87800EA32A6 /* XCRemoteSwiftPackageReference "Toast-Swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scalessec/Toast-Swift.git";
@@ -612,6 +624,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FAB23F212CFC6475009C1400 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB23F202CFC6475009C1400 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
 		FAEE60E72CF6DCFA00EA32A6 /* Toast */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FAEE60A32CF6D87800EA32A6 /* XCRemoteSwiftPackageReference "Toast-Swift" */;

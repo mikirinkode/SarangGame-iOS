@@ -1,6 +1,15 @@
 {
-  "originHash" : "cdde83a508783d312cc3a582ef10ac305fcd40f0859e132bdf50db42d3603aae",
+  "originHash" : "7f64450f501d60dc56d6da0273110a63c58cb1fd576b2943b5673a1671bd3c65",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
     {
       "identity" : "toast-swift",
       "kind" : "remoteSourceControl",
