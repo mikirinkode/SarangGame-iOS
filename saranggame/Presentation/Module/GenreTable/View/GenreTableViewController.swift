@@ -11,7 +11,7 @@ class GenreTableViewController: SGBaseViewController {
 
     
     @IBOutlet weak var genreTableView: UITableView!
-    @IBOutlet weak var fetchIndicatorLoading: UIActivityIndicatorView!
+    @IBOutlet weak var fetchLoadingIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var errorView: UIStackView!
     @IBOutlet weak var errorDescriptionLabel: UILabel!
@@ -38,19 +38,21 @@ class GenreTableViewController: SGBaseViewController {
         print("GenreTableViewController.viewWillAppear()")
         
         if genreList.isEmpty {
-            Task { await getGenreList() }
+            Task {
+                await getGenreList()
+            }
         }
     }
     
     func getGenreList() async {
         print("controller.getGenreList()")
-        fetchIndicatorLoading.isHidden = false
-        fetchIndicatorLoading.startAnimating()
+        fetchLoadingIndicator.isHidden = false
+        fetchLoadingIndicator.startAnimating()
         errorView.isHidden = true
         
         defer {
-            fetchIndicatorLoading.isHidden = true
-            fetchIndicatorLoading.stopAnimating()
+            fetchLoadingIndicator.isHidden = true
+            fetchLoadingIndicator.stopAnimating()
         }
         
         
@@ -111,12 +113,12 @@ extension GenreTableViewController: UITableViewDataSource {
             cell.imageBackground.image = genre.image
             
             if genre.state == .new {
-                cell.indicatorLoading.isHidden = false
-                cell.indicatorLoading.startAnimating()
+                cell.imageLoadIndicator.isHidden = false
+                cell.imageLoadIndicator.startAnimating()
                 startDownload(genre: genre, indexPath: indexPath)
             } else {
-                cell.indicatorLoading.startAnimating()
-                cell.indicatorLoading.isHidden = true
+                cell.imageLoadIndicator.startAnimating()
+                cell.imageLoadIndicator.isHidden = true
             }
             
             return cell

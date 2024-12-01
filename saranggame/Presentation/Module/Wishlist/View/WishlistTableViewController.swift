@@ -13,11 +13,11 @@ class WishlistTableViewController: SGBaseViewController {
     @IBOutlet weak var emptyView: UIStackView!
     
     private var gameList: [GameModel] = []
-    private lazy var gameProvider: GameProvider = { return GameProvider() }()
+    private lazy var gameProvider: LocalService = { return LocalService() }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         wishlistTableView.dataSource = self
         wishlistTableView.delegate = self
@@ -28,7 +28,7 @@ class WishlistTableViewController: SGBaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if (gameList.isEmpty){
+        if (gameList.isEmpty) {
             getWishlistGameList()
         }
         
@@ -56,24 +56,24 @@ extension WishlistTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "gameTableViewCell", for: indexPath) as? GameTableViewCell {
             let game = gameList[indexPath.row]
-            cell.gameName.text = game.name
-            cell.gameRating.text = "\(game.rating)"
+            cell.gameNameLabel.text = game.name
+            cell.gameRatingLabel.text = "\(game.rating)"
             
             
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd MMM yyyy"
             
-            cell.gameReleaseDate.text = dateFormatter.string(from: game.released)
+            cell.gameReleasedDateLabel.text = dateFormatter.string(from: game.released)
             
             cell.gameImage.image = game.image
             
             if game.state == .new {
-                cell.indicatorLoading.isHidden = false
-                cell.indicatorLoading.startAnimating()
+                cell.imageLoadIndicator.isHidden = false
+                cell.imageLoadIndicator.startAnimating()
                 startDownload(game: game, indexPath: indexPath)
             } else {
-                cell.indicatorLoading.startAnimating()
-                cell.indicatorLoading.isHidden = true
+                cell.imageLoadIndicator.startAnimating()
+                cell.imageLoadIndicator.isHidden = true
             }
             
             return cell
@@ -102,12 +102,12 @@ extension WishlistTableViewController: UITableViewDataSource {
 }
 
 extension WishlistTableViewController: UITableViewDelegate {
-  func tableView(
-    _ tableView: UITableView,
-    didSelectRowAt indexPath: IndexPath
-  ) {
-      performSegue(withIdentifier: "moveToGameDetail", sender: "\(gameList[indexPath.row].id)")
-  }
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        performSegue(withIdentifier: "moveToGameDetail", sender: "\(gameList[indexPath.row].id)")
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "moveToGameDetail" {

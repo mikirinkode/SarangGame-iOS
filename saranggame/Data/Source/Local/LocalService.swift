@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import UIKit
 
 enum GameProviderError: Error {
     case fetchError(String)
@@ -14,7 +13,7 @@ enum GameProviderError: Error {
     case deleteError(String)
 }
 
-class GameProvider {
+class LocalService {
     
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Game")

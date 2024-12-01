@@ -5,10 +5,10 @@
 //  Created by MacBook on 30/11/24.
 //
 
-class GamePresenter: GamePresenterProtocol {
-    private let gameUseCase: GameUseCase
+class GenrePresenter: GenrePresenterProtocol {
+    private let gameUseCase: GenreUseCase
     
-    init(useCase: GameUseCase){
+    init(useCase: GenreUseCase){
         self.gameUseCase = useCase
     }
     

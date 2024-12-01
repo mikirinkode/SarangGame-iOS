@@ -1,35 +1,10 @@
 //
-//  GameDetailModel.swift
+//  GameDetailResponse.swift
 //  saranggame
 //
-//  Created by MacBook on 24/11/24.
+//  Created by MacBook on 01/12/24.
 //
 import UIKit
-
-class GameDetailModel {
-    let id: Int
-    let name: String
-    let released: Date
-    let backgroundImage: URL
-    let rating: Double
-    let description: String
-//    let genres: [GenreModel] // TODO
-    
-    var image: UIImage?
-    var state: DownloadState = .new
-    
-    init(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double, description: String) {
-        self.id  = id
-        self.name = name
-        self.backgroundImage = backgroundImage
-        self.released = released
-        self.rating = rating
-        self.description = description
-//        self.genres = genres
-    }
-    
-}
-
 
 struct GameDetailResponse: Codable {
     
@@ -73,17 +48,9 @@ struct GameDetailResponse: Codable {
     }
 }
 
-extension GameDetailModel {
-    convenience init(from response: GameDetailResponse) {
-        self.init(
-            id: response.id,
-            name: response.name,
-            backgroundImage: response.backgroundImage,
-            released: response.released,
-            rating: response.rating,
-            description: response.description
-//            genres: response.genres.map { $0.toModel() }
-        )
+extension GameDetailResponse {
+    func toEntity() -> GameDetailEntity {
+        return GameDetailEntity(id: id, name: name, released: released, backgroundImage: backgroundImage, rating: rating, description: description, genres: genres.map { $0.toEntity()
+        })
     }
 }
-

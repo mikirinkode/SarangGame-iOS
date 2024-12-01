@@ -1,44 +1,11 @@
 //
-//  GameModel.swift
+//  GameResponse.swift
 //  saranggame
 //
-//  Created by MacBook on 23/11/24.
+//  Created by MacBook on 01/12/24.
 //
 
 import UIKit
-
-enum DownloadState {
-    case new, downloaded, failed
-}
-
-class GameModel {
-    let id: Int
-    let name: String
-    let released: Date
-    let backgroundImage: URL
-    let rating: Double
-    
-    var image: UIImage?
-    var state: DownloadState = .new
-    var isOnWishlist: Bool = false
-    
-    init(id: Int, name: String, backgroundImage: URL, released: Date, rating: Double) {
-        self.id  = id
-        self.name = name
-        self.backgroundImage = backgroundImage
-        self.released = released
-        self.rating = rating
-    }
-    
-}
-
-struct GameListResponse: Codable {
-    let gameList: [GameResponse]
-    
-    enum CodingKeys: String, CodingKey {
-        case gameList = "results"
-    }
-}
 
 struct GameResponse: Codable {
     
@@ -71,5 +38,11 @@ struct GameResponse: Codable {
         id = try container.decode(Int.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         rating = try container.decode(Double.self, forKey: .rating)
+    }
+}
+
+extension GameResponse {
+    func toEntity() -> GameEntity {
+        return GameEntity(id: id, name: name, released: released, backgroundImage: backgroundImage, rating: rating)
     }
 }

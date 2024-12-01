@@ -81,10 +81,10 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="gameImage" destination="9hK-pA-Adj" id="2IV-Et-xtr"/>
-                <outlet property="gameName" destination="IkL-3L-bBU" id="i3c-AN-LMk"/>
-                <outlet property="gameRating" destination="86h-yR-lpT" id="qRF-Yi-Hpl"/>
-                <outlet property="gameReleaseDate" destination="pQz-xm-O8g" id="v1x-9h-SqV"/>
-                <outlet property="indicatorLoading" destination="Ejz-NW-hoc" id="uQg-A0-FdQ"/>
+                <outlet property="gameNameLabel" destination="IkL-3L-bBU" id="i3c-AN-LMk"/>
+                <outlet property="gameRatingLabel" destination="86h-yR-lpT" id="qRF-Yi-Hpl"/>
+                <outlet property="gameReleasedDateLabel" destination="pQz-xm-O8g" id="v1x-9h-SqV"/>
+                <outlet property="imageLoadIndicator" destination="Ejz-NW-hoc" id="uQg-A0-FdQ"/>
             </connections>
             <point key="canvasLocation" x="139" y="20"/>
         </tableViewCell>

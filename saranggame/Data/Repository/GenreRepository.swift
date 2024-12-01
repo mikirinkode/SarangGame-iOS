@@ -5,11 +5,11 @@
 //  Created by MacBook on 30/11/24.
 //
 
-class GameRepository: GameRepositoryProtocol {
+class GenreRepository: GenreRepositoryProtocol {
     
-    private let gameDataSource: GameDataSourceProtocol
+    private let gameDataSource: GenreDataSourceProtocol
     
-    init(dataSource: GameDataSourceProtocol){
+    init(dataSource: GenreDataSourceProtocol){
         self.gameDataSource = dataSource
     }
     
