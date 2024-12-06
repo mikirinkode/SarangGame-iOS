@@ -14,10 +14,6 @@ final class Injection: NSObject {
         return NetworkService()
     }
     
-    private func provideLocalService() -> LocalService {
-        return LocalService()
-    }
-    
     private func provideGenreDataSource() -> GenreDataSourceProtocol {
         let networkService = provideNetworkService()
         
@@ -26,15 +22,14 @@ final class Injection: NSObject {
     
     private func provideRealmService() -> RealmService {
         let realm = try? Realm()
-        return RealmService.sharedInstance(realm)
+        return RealmService(realm: realm)
      }
      
      private func provideGameDataSource() -> GameDataSourceProtocol {
          let networkService = provideNetworkService()
          let realmService = provideRealmService()
-         let localService = provideLocalService()
          
-         return GameDataSource(networkService: networkService, localService: localService, realmService: realmService)
+         return GameDataSource(networkService: networkService, realmService: realmService)
      }
     
     private func provideGenreRepository() -> GenreRepositoryProtocol {

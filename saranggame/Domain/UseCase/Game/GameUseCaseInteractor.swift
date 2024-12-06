@@ -13,27 +13,27 @@ class GameUseCaseInteractor: GameUseCase {
         self.gameRepository = repository
     }
     
-    func getGameList(genreID: String) -> Observable<[GameEntity]> {
+    func getGameList(genreID: String) -> Single<[GameEntity]> {
         return gameRepository.getGameList(genreID: genreID)
     }
     
-    func getGameDetail(gameID: String) async throws -> GameDetailEntity {
-        return try await gameRepository.getGameDetail(gameID: gameID)
+    func getGameDetail(gameID: String) -> Single<GameDetailEntity> {
+        return gameRepository.getGameDetail(gameID: gameID)
     }
     
-    func getWishlistGame() -> Observable<[GameEntity]>  {
+    func getWishlistGame() -> Observable<[GameEntity]> {
         return gameRepository.getWishlistGame()
     }
     
-    func checkIsOnWishlist(gameID: Int) async throws -> Bool {
-        return try await gameRepository.checkIsOnWishlist(gameID: gameID)
+    func checkIsOnWishlist(gameID: Int) -> Single<Bool> {
+        return gameRepository.checkIsOnWishlist(gameID: gameID)
     }
     
-    func addGame(gameEntity: GameEntity) async throws {
-        return try await gameRepository.addGame(gameEntity: gameEntity)
+    func addGame(gameEntity: GameEntity) -> Completable {
+        return gameRepository.addGame(gameEntity: gameEntity)
     }
     
-    func removeGame(gameID: Int) async throws {
-        return try await gameRepository.removeGame(gameID: gameID)
+    func removeGame(gameID: Int) -> Completable {
+        return gameRepository.removeGame(gameID: gameID)
     }
 }

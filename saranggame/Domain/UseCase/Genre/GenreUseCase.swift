@@ -7,5 +7,5 @@
 import RxSwift
 
 protocol GenreUseCase {
-    func getGenreList() -> Observable<[GenreEntity]>
+    func getGenreList() -> Single<[GenreEntity]>
 }

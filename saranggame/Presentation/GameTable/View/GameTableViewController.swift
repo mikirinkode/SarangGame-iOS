@@ -55,6 +55,7 @@ class GameTableViewController: BaseViewController, GameViewProtocol {
     }
     
     func showGames(_ games: [GameUIModel]) {
+        hideLoadingIndicator()
         gameList = games
         gameTableView.reloadData()
     }
@@ -71,6 +72,7 @@ class GameTableViewController: BaseViewController, GameViewProtocol {
     }
     
     func showError(message: String) {
+        hideLoadingIndicator()
         errorDescriptionLabel.text = message
         errorView.isHidden = false
     }

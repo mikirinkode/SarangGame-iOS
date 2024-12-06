@@ -30,10 +30,8 @@ class GenrePresenter: GenrePresenterProtocol {
                 } else {
                     self.view?.showGenres(uiModels)
                 }
-            } onError: { error in
+            } onFailure: { error in
                 self.view?.showError(message: error.localizedDescription)
-            } onCompleted: {
-                self.view?.hideLoadingIndicator()
             }.disposed(by: disposeBag)
     }
     

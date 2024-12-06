@@ -21,7 +21,6 @@ class WishlistTableViewController: BaseViewController, WishlistViewProtocol {
     @IBOutlet weak var errorDescLabel: UILabel!
     
     private var gameList: [GameUIModel] = []
-    private lazy var gameProvider: LocalService = { return LocalService() }()
     
     private lazy var presenter: WishlistPresenter = {
         Injection().provideWishlistPresenter()
@@ -45,15 +44,17 @@ class WishlistTableViewController: BaseViewController, WishlistViewProtocol {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        presenter.getWishlistGame()
+        if gameList.isEmpty {
+            presenter.getWishlistGame()
+        }
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    deinit {
         presenter.detachView()
     }
     
     func showWishlist(_ games: [GameUIModel]) {
+        wishlistTableView.isHidden = false
         gameList = games
         wishlistTableView.reloadData()
         errorView.isHidden = true
@@ -63,6 +64,7 @@ class WishlistTableViewController: BaseViewController, WishlistViewProtocol {
     func showEmptyView() {
         emptyView.isHidden = false
         errorView.isHidden = true
+        wishlistTableView.isHidden = true
     }
     
     func showError(message: String) {

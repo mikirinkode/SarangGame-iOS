@@ -61,6 +61,7 @@ class GenreTableViewController: BaseViewController, GenreViewProtocol {
         print("view, showGenres: \(genres.count)")
         genreList = genres
         genreTableView.reloadData()
+        hideLoadingIndicator()
     }
     
     func showLoadingIndicator() {
@@ -77,6 +78,7 @@ class GenreTableViewController: BaseViewController, GenreViewProtocol {
     func showError(message: String) {
         errorDescriptionLabel.text = message
         errorView.isHidden = false
+        hideLoadingIndicator()
     }
     
     fileprivate func startDownload(genre: GenreUIModel, indexPath: IndexPath) {

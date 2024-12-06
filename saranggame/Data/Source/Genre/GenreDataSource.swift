@@ -14,7 +14,7 @@ class GenreDataSource: GenreDataSourceProtocol {
         self.networkService = networkService
     }
     
-    func getGenreListFromNetwork() -> Observable<[GenreEntity]> {
+    func getGenreListFromNetwork() -> Single<[GenreEntity]> {
         return networkService.getGenreList()
     }
 }

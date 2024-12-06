@@ -1,46 +1,45 @@
 //
-//  GamePresenter.swift
+//  WishlistProtocol.swift
 //  saranggame
 //
 //  Created by MacBook on 01/12/24.
 //
 import RxSwift
 
-class GamePresenter: GamePresenterProtocol {
-    private weak var view: GameViewProtocol?
-    private let gameUseCase: GameUseCase
-
+class WishlistPresenter: WishlistPresenterProtocol {
+    private weak var view: WishlistViewProtocol?
+    private let useCase: GameUseCase
+    
     let disposeBag = DisposeBag()
     
-    init(gameUseCase: GameUseCase) {
-        self.gameUseCase = gameUseCase
+    init(useCase: GameUseCase) {
+        self.useCase = useCase
     }
     
-    func getGameList(genreID: String) {
-        view?.showLoadingIndicator()
-        gameUseCase.getGameList(genreID: genreID)
+    func getWishlistGame() {
+        useCase.getWishlistGame()
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] games in
                 guard let self = self else { return }
                 
                 let uiModels = games.map { GameUIModel(from: $0) }
                 if uiModels.isEmpty {
-                    self.view?.showError(message: "No games found.")
+                    self.view?.showEmptyView()
                 } else {
-                    self.view?.showGames(uiModels)
+                    print("wishlist presenter showWishlist")
+                    self.view?.showWishlist(uiModels)
                 }
             } onError: { error in
                 self.view?.showError(message: error.localizedDescription)
-            } onCompleted: {
-                self.view?.hideLoadingIndicator()
             }.disposed(by: disposeBag)
     }
     
-    func attachView(view: GameViewProtocol) {
+    func attachView(view: WishlistViewProtocol) {
         self.view = view
     }
     
     func detachView() {
+        print("detach wishlist view")
         view = nil
     }
 }

@@ -14,7 +14,7 @@ class GenreRepository: GenreRepositoryProtocol {
         self.genreDataSource = dataSource
     }
     
-    func getGenreList() -> Observable<[GenreEntity]> {
+    func getGenreList() -> Single<[GenreEntity]> {
         return genreDataSource.getGenreListFromNetwork()
     }
 }

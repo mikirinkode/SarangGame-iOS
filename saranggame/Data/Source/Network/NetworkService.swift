@@ -18,8 +18,8 @@ class NetworkService {
     let apiKey = ""
     let baseURL = "https://api.rawg.io/api"
 
-    func getGenreList() -> Observable<[GenreEntity]> {
-        return Observable<[GenreEntity]>.create { observer in
+    func getGenreList() -> Single<[GenreEntity]> {
+        return Single<[GenreEntity]>.create { single in
             let url = "\(self.baseURL)/genres"
             let parameters: [String: String] = [
                 "key": self.apiKey
@@ -30,17 +30,16 @@ class NetworkService {
                 .responseDecodable(of: GenreListResponse.self) { response in
                     switch response.result {
                     case .success(let result):
-                        observer.onNext(result.toEntities())
-                        observer.onCompleted()
+                        single(.success(result.toEntities()))
                     case .failure(let error):
                         if let afError = error.asAFError, afError.isResponseValidationError {
-                            observer.onError(NetworkError.invalidResponse)
+                            single(.failure(NetworkError.invalidResponse))
                         } else {
-                            observer.onError(
+                            single(.failure(
                                 NetworkError.requestFailed(
                                     "We encountered an unexpected issue. Please try again."
                                 )
-                            )
+                            ))
                         }
                     }
                 }
@@ -48,8 +47,8 @@ class NetworkService {
         }
     }
     
-    func getGameList(_ genreID: String?) -> Observable<[GameEntity]> {
-        return Observable<[GameEntity]>.create { observer in
+    func getGameList(_ genreID: String?) -> Single<[GameEntity]> {
+        return Single<[GameEntity]>.create { single in
             let url = "\(self.baseURL)/games"
             var parameters: [String: String] = [
                 "key": self.apiKey
@@ -64,50 +63,49 @@ class NetworkService {
                 .responseDecodable(of: GameListResponse.self) { response in
                     switch response.result {
                     case .success(let result):
-                        observer.onNext(result.toEntities())
-                        observer.onCompleted()
+                        single(.success(result.toEntities()))
                     case .failure(let error):
                         if let afError = error.asAFError, afError.isResponseValidationError {
-                            observer.onError(NetworkError.invalidResponse)
+                            single(.failure(NetworkError.invalidResponse))
                         } else {
-                            observer.onError(
+                            single(.failure(
                                 NetworkError.requestFailed(
                                     "We encountered an unexpected issue. Please try again."
                                 )
-                            )
+                            ))
                         }
                     }
                 }
             return Disposables.create()
         }
     }
-
-    func getGameDetail(_ gameID: String) async throws -> GameDetailEntity {
-        let url = "\(baseURL)/games/\(gameID)"
-        let parameters: [String: String] = [
-            "key": apiKey
-        ]
-
-        return try await withCheckedThrowingContinuation { continuation in
+    
+    func getGameDetail(_ gameID: String) -> Single<GameDetailEntity> {
+        return Single<GameDetailEntity>.create { single in
+            let url = "\(self.baseURL)/games/\(gameID)"
+            let parameters: [String: String] = [
+                "key": self.apiKey
+            ]
             AF.request(url, method: .get, parameters: parameters)
                 .validate(statusCode: 200..<300)
                 .responseDecodable(of: GameDetailResponse.self) { response in
                     switch response.result {
                     case .success(let result):
-                        continuation.resume(returning: result.toEntity())
+                        single(.success(result.toEntity()))
                     case .failure(let error):
                         if let afError = error.asAFError, afError.isResponseValidationError {
-                            continuation.resume(throwing: NetworkError.invalidResponse)
+                            single(.failure(NetworkError.invalidResponse))
                         } else {
-                            continuation.resume(
-                                throwing: NetworkError.requestFailed(
+                            single(.failure(
+                                NetworkError.requestFailed(
                                     "We encountered an unexpected issue. Please try again."
                                 )
-                            )
+                            ))
                         }
                     }
                 }
+            
+            return Disposables.create()
         }
     }
-
 }

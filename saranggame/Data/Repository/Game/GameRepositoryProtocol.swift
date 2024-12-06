@@ -7,15 +7,15 @@
 import RxSwift
 
 protocol GameRepositoryProtocol {
-    func getGameList(genreID: String) -> Observable<[GameEntity]>
+    func getGameList(genreID: String) -> Single<[GameEntity]>
     
-    func getGameDetail(gameID: String) async throws -> GameDetailEntity
+    func getGameDetail(gameID: String) -> Single<GameDetailEntity>
     
     func getWishlistGame() -> Observable<[GameEntity]> 
     
-    func checkIsOnWishlist(gameID: Int) async throws -> Bool
+    func checkIsOnWishlist(gameID: Int) -> Single<Bool>
     
-    func addGame(gameEntity: GameEntity) async throws
+    func addGame(gameEntity: GameEntity) -> Completable 
     
-    func removeGame(gameID: Int) async throws
+    func removeGame(gameID: Int) -> Completable 
 }

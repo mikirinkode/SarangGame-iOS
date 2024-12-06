@@ -13,7 +13,7 @@ class GenreUseCaseInteractor: GenreUseCase {
         self.genreRepository = repository
     }
     
-    func getGenreList() -> Observable<[GenreEntity]> {
+    func getGenreList() -> Single<[GenreEntity]> {
         return genreRepository.getGenreList()
     }
 }

@@ -8,36 +8,34 @@ import RxSwift
 
 class GameDataSource: GameDataSourceProtocol {
     private let networkService: NetworkService
-    private let localService: LocalService
     private let realmService: RealmService
     
-    init(networkService: NetworkService, localService: LocalService, realmService: RealmService) {
+    init(networkService: NetworkService, realmService: RealmService) {
         self.networkService = networkService
-        self.localService = localService
         self.realmService = realmService
     }
     
-    func getGameListFromNetwork(genreID: String) -> Observable<[GameEntity]> {
+    func getGameListFromNetwork(genreID: String) -> Single<[GameEntity]> {
         return networkService.getGameList(genreID)
     }
     
-    func getGameDetailFromNetwork(gameID: String) async throws -> GameDetailEntity {
-        return try await networkService.getGameDetail(gameID)
+    func getGameDetailFromNetwork(gameID: String) -> Single<GameDetailEntity> {
+        return networkService.getGameDetail(gameID)
     }
     
     func getWishlistGameFromLocal() -> Observable<[GameEntity]> {
-        return localService.getWishlistGame()
+        return realmService.getWishlistGame()
     }
     
-    func checkIsOnLocalWishlist(gameID: Int) async throws -> Bool {
-        return try await localService.checkIsOnWishlist(gameID)
+    func checkIsOnLocalWishlist(gameID: Int) -> Single<Bool> {
+        return realmService.checkIsOnWishlist(gameID)
     }
     
-    func addGameToLocalWishlist(gameEntity: GameEntity) async throws {
-        return try await localService.addGame(gameEntity)
+    func addGameToLocalWishlist(gameEntity: GameEntity) -> Completable {
+        return realmService.addGame(gameEntity)
     }
     
-    func removeGameFromLocalWishlist(gameID: Int) async throws {
-        return try await localService.removeGame(gameID)
+    func removeGameFromLocalWishlist(gameID: Int) -> Completable {
+        return realmService.removeGame(gameID)
     }
 }
