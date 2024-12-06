@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 final class Injection: NSObject {
     
@@ -23,12 +24,18 @@ final class Injection: NSObject {
         return GenreDataSource(networkService: networkService)
     }
     
-    private func provideGameDataSource() -> GameDataSourceProtocol {
-        let networkService = provideNetworkService()
-        let localService = provideLocalService()
-        
-        return GameDataSource(networkService: networkService, localService: localService)
-    }
+    private func provideRealmService() -> RealmService {
+        let realm = try? Realm()
+        return RealmService.sharedInstance(realm)
+     }
+     
+     private func provideGameDataSource() -> GameDataSourceProtocol {
+         let networkService = provideNetworkService()
+         let realmService = provideRealmService()
+         let localService = provideLocalService()
+         
+         return GameDataSource(networkService: networkService, localService: localService, realmService: realmService)
+     }
     
     private func provideGenreRepository() -> GenreRepositoryProtocol {
         let genreDataSource = provideGenreDataSource()

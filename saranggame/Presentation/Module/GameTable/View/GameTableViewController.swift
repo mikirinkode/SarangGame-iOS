@@ -7,7 +7,14 @@
 
 import UIKit
 
-class GameTableViewController: SGBaseViewController {
+protocol GameViewProtocol: AnyObject {
+    func showGames(_ games: [GameUIModel])
+    func showError(message: String)
+    func showLoadingIndicator()
+    func hideLoadingIndicator()
+}
+
+class GameTableViewController: BaseViewController, GameViewProtocol {
         
     @IBOutlet weak var gameTableView: UITableView!
     @IBOutlet weak var fetchLoadingIndicator: UIActivityIndicatorView!
@@ -18,7 +25,7 @@ class GameTableViewController: SGBaseViewController {
     private var gameList: [GameUIModel] = []
     var genreID: String?
     
-    lazy var gamePresenter: GamePresenter = {
+    lazy var presenter: GamePresenter = {
         Injection().provideGamePresenter()
     }()
     
@@ -32,39 +39,40 @@ class GameTableViewController: SGBaseViewController {
             UINib(nibName: "GameTableViewCell", bundle: nil),
             forCellReuseIdentifier: "gameTableViewCell"
         )
+        
+        presenter.attachView(view: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if gameList.isEmpty {
-            Task {
-                await getGameList()
-            }
-        }
+        presenter.getGameList(genreID: genreID ?? "0")
     }
     
-    func getGameList() async {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        presenter.detachView()
+    }
+    
+    func showGames(_ games: [GameUIModel]) {
+        gameList = games
+        gameTableView.reloadData()
+    }
+    
+    func showLoadingIndicator() {
         fetchLoadingIndicator.isHidden = false
         fetchLoadingIndicator.startAnimating()
         errorView.isHidden = true
-        
-        defer {
-            fetchLoadingIndicator.isHidden = true
-            fetchLoadingIndicator.stopAnimating()
-        }
-        
-        do {
-            let gameEntities = try await gamePresenter.getGameList(genreID: genreID ?? "0")
-            gameList = gameEntities.map { GameUIModel(from: $0) }
-            gameTableView.reloadData()
-        } catch NetworkError.invalidResponse {
-            showError(message: "Invalid response from the server. Please try again.")
-        } catch NetworkError.requestFailed(let message) {
-            showError(message: message)
-        } catch {
-            showError(message: "Unexpected error: \(error.localizedDescription)")
-        }
+    }
+    
+    func hideLoadingIndicator() {
+        fetchLoadingIndicator.isHidden = true
+        fetchLoadingIndicator.stopAnimating()
+    }
+    
+    func showError(message: String) {
+        errorDescriptionLabel.text = message
+        errorView.isHidden = false
     }
     
     fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath) {
@@ -81,15 +89,8 @@ class GameTableViewController: SGBaseViewController {
         }
     }
     
-    func showError(message: String) {
-        errorDescriptionLabel.text = message
-        errorView.isHidden = false
-    }
-    
     @IBAction func tryAgainButtonOnClick(_ sender: Any) {
-        Task {
-            await getGameList()
-        }
+        presenter.getGameList(genreID: genreID ?? "0")
     }
 }
 

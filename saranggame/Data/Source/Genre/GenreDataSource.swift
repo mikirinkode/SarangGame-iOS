@@ -4,6 +4,7 @@
 //
 //  Created by MacBook on 30/11/24.
 //
+import RxSwift
 
 class GenreDataSource: GenreDataSourceProtocol {
     
@@ -13,7 +14,7 @@ class GenreDataSource: GenreDataSourceProtocol {
         self.networkService = networkService
     }
     
-    func getGenreListFromNetwork() async throws -> [GenreEntity] {
-        return try await networkService.getGenreList()
+    func getGenreListFromNetwork() -> Observable<[GenreEntity]> {
+        return networkService.getGenreList()
     }
 }

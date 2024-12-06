@@ -4,26 +4,29 @@
 //
 //  Created by MacBook on 01/12/24.
 //
+import RxSwift
 
 class GameDataSource: GameDataSourceProtocol {
     private let networkService: NetworkService
     private let localService: LocalService
+    private let realmService: RealmService
     
-    init(networkService: NetworkService, localService: LocalService) {
+    init(networkService: NetworkService, localService: LocalService, realmService: RealmService) {
         self.networkService = networkService
         self.localService = localService
+        self.realmService = realmService
     }
     
-    func getGameListFromNetwork(genreID: String) async throws -> [GameEntity] {
-        return try await networkService.getGameList(genreID)
+    func getGameListFromNetwork(genreID: String) -> Observable<[GameEntity]> {
+        return networkService.getGameList(genreID)
     }
     
     func getGameDetailFromNetwork(gameID: String) async throws -> GameDetailEntity {
         return try await networkService.getGameDetail(gameID)
     }
     
-    func getWishlistGameFromLocal() async throws -> [GameEntity] {
-        return try await localService.getWishlistGame()
+    func getWishlistGameFromLocal() -> Observable<[GameEntity]> {
+        return localService.getWishlistGame()
     }
     
     func checkIsOnLocalWishlist(gameID: Int) async throws -> Bool {

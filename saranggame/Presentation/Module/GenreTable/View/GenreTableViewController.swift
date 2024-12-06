@@ -6,8 +6,16 @@
 //
 
 import UIKit
+import RxSwift
 
-class GenreTableViewController: SGBaseViewController {
+protocol GenreViewProtocol: AnyObject {
+    func showGenres(_ genres: [GenreUIModel])
+    func showError(message: String)
+    func showLoadingIndicator()
+    func hideLoadingIndicator()
+}
+
+class GenreTableViewController: BaseViewController, GenreViewProtocol {
 
     @IBOutlet weak var genreTableView: UITableView!
     @IBOutlet weak var fetchLoadingIndicator: UIActivityIndicatorView!
@@ -32,42 +40,43 @@ class GenreTableViewController: SGBaseViewController {
             UINib(nibName: "GenreTableViewCell", bundle: nil),
             forCellReuseIdentifier: "genreTableViewCell"
         )
+        
+        genrePresenter.attachView(view: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("GenreTableViewController.viewWillAppear()")
         
-        if genreList.isEmpty {
-            Task {
-                await getGenreList()
-            }
-        }
+        genrePresenter.getGenreList()
     }
     
-    func getGenreList() async {
-        print("controller.getGenreList()")
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        genrePresenter.detachView()
+    }
+    
+    func showGenres(_ genres: [GenreUIModel]) {
+        print("view, showGenres: \(genres.count)")
+        genreList = genres
+        genreTableView.reloadData()
+    }
+    
+    func showLoadingIndicator() {
         fetchLoadingIndicator.isHidden = false
         fetchLoadingIndicator.startAnimating()
         errorView.isHidden = true
-        
-        defer {
-            fetchLoadingIndicator.isHidden = true
-            fetchLoadingIndicator.stopAnimating()
-        }
-        
-        do {
-            let genreEntities = try await genrePresenter.getGenreList()
-            genreList = genreEntities.map { GenreUIModel(from: $0) }
-            
-            genreTableView.reloadData()
-        } catch NetworkError.invalidResponse {
-            showError(message: "Invalid response from the server. Please try again.")
-        } catch NetworkError.requestFailed(let message) {
-            showError(message: message)
-        } catch {
-            showError(message: "Unexpected error: \(error.localizedDescription)")
-        }
+    }
+    
+    func hideLoadingIndicator() {
+        fetchLoadingIndicator.isHidden = true
+        fetchLoadingIndicator.stopAnimating()
+    }
+    
+    func showError(message: String) {
+        errorDescriptionLabel.text = message
+        errorView.isHidden = false
     }
     
     fileprivate func startDownload(genre: GenreUIModel, indexPath: IndexPath) {
@@ -84,13 +93,8 @@ class GenreTableViewController: SGBaseViewController {
         }
     }
     
-    func showError(message: String) {
-        errorDescriptionLabel.text = message
-        errorView.isHidden = false
-    }
-    
     @IBAction func tryAgainButtonOnClick(_ sender: Any) {
-            Task { await getGenreList() }
+        genrePresenter.getGenreList()
     }
 }
 

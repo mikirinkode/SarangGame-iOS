@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileViewController: SGBaseViewController {
+class ProfileViewController: BaseViewController {
 
     @IBOutlet weak var profileImageView: UIImageView!
     override func viewDidLoad() {

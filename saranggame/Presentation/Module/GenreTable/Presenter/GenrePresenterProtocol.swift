@@ -4,7 +4,8 @@
 //
 //  Created by MacBook on 30/11/24.
 //
+import RxSwift
 
-protocol GenrePresenterProtocol {
-    func getGenreList() async throws -> [GenreEntity]
+protocol GenrePresenterProtocol: BasePresenter {
+    func getGenreList()
 }

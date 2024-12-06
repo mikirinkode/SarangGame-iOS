@@ -4,6 +4,7 @@
 //
 //  Created by MacBook on 30/11/24.
 //
+import RxSwift
 
 class GenreRepository: GenreRepositoryProtocol {
     
@@ -13,7 +14,7 @@ class GenreRepository: GenreRepositoryProtocol {
         self.genreDataSource = dataSource
     }
     
-    func getGenreList() async throws -> [GenreEntity] {
-        return try await genreDataSource.getGenreListFromNetwork()
+    func getGenreList() -> Observable<[GenreEntity]> {
+        return genreDataSource.getGenreListFromNetwork()
     }
 }

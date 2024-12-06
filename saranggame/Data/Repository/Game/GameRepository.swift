@@ -4,6 +4,7 @@
 //
 //  Created by MacBook on 01/12/24.
 //
+import RxSwift
 
 class GameRepository: GameRepositoryProtocol {
     private let gameDataSource: GameDataSourceProtocol
@@ -12,16 +13,16 @@ class GameRepository: GameRepositoryProtocol {
         self.gameDataSource = dataSource
     }
     
-    func getGameList(genreID: String) async throws -> [GameEntity] {
-        return try await gameDataSource.getGameListFromNetwork(genreID: genreID)
+    func getGameList(genreID: String) -> Observable<[GameEntity]> {
+        return gameDataSource.getGameListFromNetwork(genreID: genreID)
     }
     
     func getGameDetail(gameID: String) async throws -> GameDetailEntity {
         return try await gameDataSource.getGameDetailFromNetwork(gameID: gameID)
     }
     
-    func getWishlistGame() async throws -> [GameEntity] {
-        return try await gameDataSource.getWishlistGameFromLocal()
+    func getWishlistGame() -> Observable<[GameEntity]> {
+        return gameDataSource.getWishlistGameFromLocal()
     }
     
     func checkIsOnWishlist(gameID: Int) async throws -> Bool {

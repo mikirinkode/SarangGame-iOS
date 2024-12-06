@@ -4,6 +4,7 @@
 //
 //  Created by MacBook on 30/11/24.
 //
+import RxSwift
 
 class GenreUseCaseInteractor: GenreUseCase {
     private let genreRepository: GenreRepositoryProtocol
@@ -12,7 +13,7 @@ class GenreUseCaseInteractor: GenreUseCase {
         self.genreRepository = repository
     }
     
-    func getGenreList() async throws -> [GenreEntity] {
-        return try await genreRepository.getGenreList()
+    func getGenreList() -> Observable<[GenreEntity]> {
+        return genreRepository.getGenreList()
     }
 }

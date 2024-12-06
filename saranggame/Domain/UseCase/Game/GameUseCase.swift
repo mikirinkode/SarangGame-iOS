@@ -4,11 +4,12 @@
 //
 //  Created by MacBook on 01/12/24.
 //
+import RxSwift
 
 protocol GameUseCase {
-    func getGameList(genreID: String) async throws -> [GameEntity]
+    func getGameList(genreID: String) -> Observable<[GameEntity]>
     
-    func getWishlistGame() async throws -> [GameEntity]
+    func getWishlistGame() -> Observable<[GameEntity]> 
     
     func getGameDetail(gameID: String) async throws -> GameDetailEntity
     

@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import RxSwift
 
 protocol GameDataSourceProtocol {
-    func getGameListFromNetwork(genreID: String) async throws -> [GameEntity]
+    func getGameListFromNetwork(genreID: String) -> Observable<[GameEntity]>
     
     func getGameDetailFromNetwork(gameID: String) async throws -> GameDetailEntity
     
-    func getWishlistGameFromLocal() async throws -> [GameEntity]
+    func getWishlistGameFromLocal() -> Observable<[GameEntity]> 
     
     func checkIsOnLocalWishlist(gameID: Int) async throws -> Bool
     

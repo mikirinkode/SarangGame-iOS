@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import RxSwift
 
 enum LocalServiceError: Error {
     case fetchError(String)
@@ -37,24 +38,36 @@ class LocalService {
         taskContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         return taskContext
     }
-    
-    func getWishlistGame() async throws -> [GameEntity] {
-        let taskContext = newTaskContext()
-        
-        return try await taskContext.perform {
-            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Game")
-            let results = try taskContext.fetch(fetchRequest)
-            return results.map { result in
-                GameEntity(
-                    id: Int(result.value(forKeyPath: "id") as? Int32 ?? 0),
-                    name: result.value(forKeyPath: "name") as? String ?? "",
-                    released: result.value(forKeyPath: "released") as? Date ?? Date.now,
-                    backgroundImage: result.value(forKeyPath: "backgroundImage") as? URL ?? URL(string: "")!,
-                    rating: result.value(forKeyPath: "rating") as? Double ?? 0.0
-                )
+
+    func getWishlistGame() -> Observable<[GameEntity]> {
+        return Observable.create { observer in
+            let taskContext = self.newTaskContext()
+            
+            taskContext.perform {
+                do {
+                    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Game")
+                    let results = try taskContext.fetch(fetchRequest)
+                    
+                    // Map results to GameEntity
+                    let gameEntities = results.map { result in
+                        GameEntity(
+                            id: Int(result.value(forKeyPath: "id") as? Int32 ?? 0),
+                            name: result.value(forKeyPath: "name") as? String ?? "",
+                            released: result.value(forKeyPath: "released") as? Date ?? Date(),
+                            backgroundImage: result.value(forKeyPath: "backgroundImage") as? URL ?? URL(string: "")!,
+                            rating: result.value(forKeyPath: "rating") as? Double ?? 0.0
+                        )
+                    }
+                    observer.onNext(gameEntities)
+                    observer.onCompleted()
+                } catch {
+                    observer.onError(error)
+                }
             }
+            return Disposables.create()
         }
     }
+
     
     func checkIsOnWishlist(_ id: Int) async throws -> Bool {
         let taskContext = newTaskContext()

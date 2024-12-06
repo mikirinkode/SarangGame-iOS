@@ -7,7 +7,13 @@
 
 import UIKit
 
-class WishlistTableViewController: SGBaseViewController {
+protocol WishlistViewProtocol: AnyObject {
+    func showWishlist(_ games: [GameUIModel])
+    func showError(message: String)
+    func showEmptyView()
+}
+
+class WishlistTableViewController: BaseViewController, WishlistViewProtocol {
     
     @IBOutlet weak var wishlistTableView: UITableView!
     @IBOutlet weak var emptyView: UIStackView!
@@ -17,7 +23,7 @@ class WishlistTableViewController: SGBaseViewController {
     private var gameList: [GameUIModel] = []
     private lazy var gameProvider: LocalService = { return LocalService() }()
     
-    private lazy var wishlistPresenter: WishlistPresenter = {
+    private lazy var presenter: WishlistPresenter = {
         Injection().provideWishlistPresenter()
     }()
     
@@ -32,33 +38,37 @@ class WishlistTableViewController: SGBaseViewController {
             UINib(nibName: "GameTableViewCell", bundle: nil),
             forCellReuseIdentifier: "gameTableViewCell"
         )
+        
+        presenter.attachView(view: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if gameList.isEmpty {
-            Task {
-                await getWishlistGameList()
-            }
-        }
-        
+        presenter.getWishlistGame()
     }
     
-    func getWishlistGameList() async {
-        do {
-            errorView.isHidden = true
-            let gameEntities = try await wishlistPresenter.getWishlistGame()
-            gameList = gameEntities.map { GameUIModel(from: $0) }
-            
-            wishlistTableView.reloadData()
-            emptyView.isHidden = !gameList.isEmpty
-        } catch LocalServiceError.fetchError(let message) {
-            errorView.isHidden = false
-            errorDescLabel.text = message
-        } catch {
-            errorView.isHidden = false
-        }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        presenter.detachView()
+    }
+    
+    func showWishlist(_ games: [GameUIModel]) {
+        gameList = games
+        wishlistTableView.reloadData()
+        errorView.isHidden = true
+        emptyView.isHidden = true
+    }
+    
+    func showEmptyView() {
+        emptyView.isHidden = false
+        errorView.isHidden = true
+    }
+    
+    func showError(message: String) {
+        errorDescLabel.text = message
+        errorView.isHidden = false
+        emptyView.isHidden = true
     }
     
     fileprivate func startDownload(game: GameUIModel, indexPath: IndexPath) {
@@ -132,9 +142,7 @@ extension WishlistTableViewController: UITableViewDelegate {
 extension WishlistTableViewController: GameDetailDelegate {
     func onWishlistDataChanged(isShouldRefresh: Bool) {
         if isShouldRefresh {
-            Task {
-                await self.getWishlistGameList()
-            }
+            presenter.getWishlistGame()
         }
     }
 }
