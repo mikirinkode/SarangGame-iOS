@@ -5,8 +5,8 @@
           xcode: latest
           cocoapods: default
           vars:
-              XCODE_PROJECT: "saraggame.xcodeproj" # Isikan nama project Anda.
-              XCODE_SCHEME: "saraggame" # Isikan nama scheme project Anda.
+              XCODE_PROJECT: "saranggame.xcodeproj" # Isikan nama project Anda.
+              XCODE_SCHEME: "saranggame" # Isikan nama scheme project Anda.
         scripts:
           - name: Run tests
             script: |
