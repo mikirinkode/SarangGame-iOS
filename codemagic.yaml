@@ -1,35 +1,29 @@
-workflows:
-  ios-project-debug:
-    name: iOS debug
-    environment:
-      xcode: 16.0.x
-      cocoapods: default
-      vars:
-        XCODE_PROJECT: "saranggame.xcodeproj"
-        XCODE_SCHEME: "saranggame"
-    scripts:
-      - name: List available simulators
-        script: |
-          xcrun simctl list devices
-      - name: Install required simulator
-        script: |
-          xcrun simctl create "iPhone 12 Pro Max" com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max "16.1"
-      - name: Run tests
-        script: |
-          xcodebuild \
-          -project "$XCODE_PROJECT" \
-          -scheme "$XCODE_SCHEME" \
-          -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.5' \
-          clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-      - name: Build debug app
-        script: |
-          xcodebuild build -project "$XCODE_PROJECT" \
-          -scheme "$XCODE_SCHEME" \
-          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-    artifacts:
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-    publishing:
-      email:
-        recipients:
-          - muhammadwafa105@gmail.com
+ workflows:
+      ios-project-debug: # workflow ID
+        name: iOS debug # workflow name
+        environment:
+          xcode: latest
+          cocoapods: default
+          vars:
+              XCODE_PROJECT: "saranggame.xcodeproj" # Isikan nama project Anda.
+              XCODE_SCHEME: "saranggame" # Isikan nama scheme project Anda.
+        scripts:
+          - name: Run tests
+            script: |
+              xcodebuild \
+              -project "$XCODE_PROJECT" \
+              -scheme "$XCODE_SCHEME" \
+              -sdk iphonesimulator \
+              -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18' \
+              clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+          - name: Build debug app
+            script: |
+              xcodebuild build -project "$XCODE_PROJECT" \
+              -scheme "$XCODE_SCHEME" \
+              CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        artifacts:
+          - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+        publishing:
+          email:
+            recipients:
+              - muhammadwafa105@gmail.com
