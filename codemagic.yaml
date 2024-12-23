@@ -2,22 +2,25 @@ workflows:
   ios-project-debug:
     name: iOS debug
     environment:
-      xcode: 15.0.0
+      xcode: 16.0.x
       cocoapods: default
       vars:
-          XCODE_PROJECT: "saranggame.xcodeproj"
-          XCODE_SCHEME: "saranggame"
+        XCODE_PROJECT: "saranggame.xcodeproj"
+        XCODE_SCHEME: "saranggame"
     scripts:
       - name: List available simulators
         script: |
           xcrun simctl list devices
+      - name: Install required simulator
+        script: |
+          xcrun simctl create "iPhone 12 Pro Max" com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max "16.1"
       - name: Run tests
         script: |
           xcodebuild \
           -project "$XCODE_PROJECT" \
           -scheme "$XCODE_SCHEME" \
           -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 14,OS=17.0' \
+          -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.5' \
           clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
       - name: Build debug app
         script: |
